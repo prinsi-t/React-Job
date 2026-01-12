@@ -1,45 +1,63 @@
 import { useParams, useLoaderData, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import { useEffect } from 'react'
 import { toast } from 'react-toastify'
 
 const EditJobPage = ({ updateJobSubmit }) => {
     const job = useLoaderData();
 
-    const [title, setTitle] = useState(job.title);
-    const [type, setType] = useState(job.type);
-    const [description, setDescription] = useState(job.description);
-    const [salary, setSalary] = useState(job.salary);
-    const [location, setLocation] = useState(job.location);
-    const [companyName, setCompanyName] = useState(job.company.name);
-    const [companyDescription, setCompanyDescription] = useState(job.company.description);
-    const [contactEmail, setContactEmail] = useState(job.company.contactEmail);
-    const [contactPhone, setContactPhone] = useState(job.company.contactPhone);
+    const [title, setTitle] = useState(job?.title || '');
+    const [type, setType] = useState(job?.type || '');
+    const [description, setDescription] = useState(job?.description || '');
+    const [salary, setSalary] = useState(job?.salary || '');
+    const [location, setLocation] = useState(job?.location || '');
+    const [companyName, setCompanyName] = useState(job?.company.name || '');
+    const [companyDescription, setCompanyDescription] = useState(job?.company.description || '');
+    const [contactEmail, setContactEmail] = useState(job?.company.contactEmail || '');
+    const [contactPhone, setContactPhone] = useState(job?.company.contactPhone || '');
 
     const navigate = useNavigate();
     const { id } = useParams();
 
-    const submitForm = (e) => {
+     useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+        const submitForm = async (e) => {
         e.preventDefault();
-  
+
         const updatedJob = {
-          id,
           title,
           type,
           location,
           description,
           salary,
-          company : {
+          company: {
             name: companyName,
             description: companyDescription,
             contactEmail,
             contactPhone
           }
-        }
-  
-        updateJobSubmit(updatedJob)
+        };
+
+        // PUT to backend
+        await fetch(`http://localhost:5000/api/jobs/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(updatedJob)
+        });
+
+        // toaster
         toast.success('Job updated successfully');
-        return navigate(`/jobs/${id}`)
-      }
+
+        // redirect to updated job page AND reload data
+        navigate(`/jobs/${id}`);
+        window.scrollTo(0, 0);
+
+
+      };
     
     return (
         <section className="bg-indigo-50">

@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { FaArrowLeft} from 'react-icons/fa'
 import { toast } from 'react-toastify'
 
 const AddJobPage = ({ addJobSubmit}) => {
@@ -38,6 +39,15 @@ const AddJobPage = ({ addJobSubmit}) => {
     }
     
     return (
+<>
+      <section>
+        <div className="container m-auto py-6 px-6">
+          <Link to="/jobs" className="text-indigo-500 hover:text-indigo-600 flex items-center">
+            <FaArrowLeft className="mr-2" /> Back to Job Listings
+          </Link>
+        </div>
+      </section>
+
         <section className="bg-indigo-50">
         <div className="container m-auto max-w-2xl py-24">
           <div
@@ -220,7 +230,8 @@ const AddJobPage = ({ addJobSubmit}) => {
           </div>
         </div>
       </section>
-    )
+    </>
+  )
 }
 
 export default AddJobPage

@@ -83,6 +83,51 @@ app.get("/api/live-jobs", async (req, res) => {
   }
 });
 
+app.get("/api/live-jobs/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const { data } = await axios.get(
+      "https://api.adzuna.com/v1/api/jobs/in/search/1",
+      {
+        params: {
+          app_id: process.env.ADZUNA_APP_ID,
+          app_key: process.env.ADZUNA_APP_KEY,
+          results_per_page: 50,
+          what: "developer",
+        },
+      }
+    );
+
+    const job = data.results.find(j => String(j.id) === String(id));
+
+    if (!job) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+
+    res.json({
+      id: job.id,
+      title: job.title,
+      type: job.contract_time || "Full-Time",
+      location: job.location?.display_name || "Remote",
+      description: job.description,
+      salary:
+        job.salary_min && job.salary_max
+          ? `${job.salary_min} - ${job.salary_max}`
+          : "Not disclosed",
+      company: {
+        name: job.company?.display_name || "Unknown",
+        description: job.description,
+        contactEmail: "N/A",
+        contactPhone: "N/A",
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to load Adzuna job" });
+  }
+});
+
 
 
 app.listen(process.env.PORT, () =>

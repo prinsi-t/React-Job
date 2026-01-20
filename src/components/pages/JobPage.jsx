@@ -2,11 +2,19 @@ import React from 'react'
 import { useParams, useLoaderData, useNavigate, Link } from 'react-router-dom'
 import { FaArrowLeft, FaMapMarker } from 'react-icons/fa'
 import { toast } from 'react-toastify'
+import { useLocation } from "react-router-dom";
+
 
 const JobPage = ({ deleteJob }) => {
   const navigate = useNavigate()
   const { id } = useParams()
-  const job = useLoaderData()
+  
+  const location = useLocation();
+const passedJob = location.state?.job;
+const loaderJob = useLoaderData();
+
+const job = passedJob || loaderJob;
+
 
   const onDeleteClick = (jobId) => {
     const confirmDelete = window.confirm('Are you sure you want to delete this job?')
@@ -80,6 +88,7 @@ const JobPage = ({ deleteJob }) => {
                 </p>
               </div>
 
+              {!job?.isExternal && (
               <div className="bg-white p-6 rounded-lg shadow-md mt-6">
                 <h3 className="text-xl font-bold mb-6">Manage Job</h3>
 
@@ -97,6 +106,7 @@ const JobPage = ({ deleteJob }) => {
                   Delete Job
                 </Link>
               </div>
+              )}
             </aside>
           </div>
         </div>
@@ -106,9 +116,16 @@ const JobPage = ({ deleteJob }) => {
 }
 
 export const jobLoader = async ({ params }) => {
-  const res = await fetch(`http://localhost:5000/api/jobs/${params.id}`)
-  const data = await res.json()
-  return data
-}
+  const id = params.id;
+
+  if (id.startsWith("adzuna_")) return null;
+
+  const res = await fetch(`http://localhost:5000/api/jobs/${id}`);
+  if (!res.ok) throw new Error("Job not found");
+
+  return await res.json();
+};
+
+
 
 export default JobPage

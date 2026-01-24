@@ -39,7 +39,7 @@ const JobListing = ({job}) => {
                           {job?.location}
                         </div>
                         <Link to={`/jobs/${job._id || `adzuna_${job.id}`}`} 
-                        state={{job}}
+                        state={{job, search: window.location.search }}
                             onClick={() => window.scrollTo(0, 0)} 
                             className="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg text-center text-sm">
                         Read More

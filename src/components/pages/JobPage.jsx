@@ -10,26 +10,34 @@ const JobPage = ({ deleteJob }) => {
   const { id } = useParams()
   
   const location = useLocation();
+  const backSearch = location.state?.search || "";
 const passedJob = location.state?.job;
 const loaderJob = useLoaderData();
 
 const job = passedJob || loaderJob;
 
 
-  const onDeleteClick = (jobId) => {
-    const confirmDelete = window.confirm('Are you sure you want to delete this job?')
-    if (!confirmDelete) return
-
-    deleteJob(jobId)
-    toast.success('Job deleted successfully')
-    navigate('/jobs')
+const onDeleteClick = (job) => {
+  // ✅ Block Adzuna deletes only
+  if (!job._id) {
+    toast.info("Live jobs cannot be deleted");
+    return;
   }
+
+  const confirm = window.confirm("Are you sure you want to delete this job?");
+  if (!confirm) return;
+
+  deleteJob(job._id);
+  toast.success("Job deleted successfully");
+  navigate("/jobs");
+};
+
 
   return (
     <>
       <section>
         <div className="container m-auto py-6 px-6">
-          <Link to="/jobs" className="text-indigo-500 hover:text-indigo-600 flex items-center">
+          <Link to={`/jobs${backSearch}`} className="text-indigo-500 hover:text-indigo-600 flex items-center">
             <FaArrowLeft className="mr-2" /> Back to Job Listings
           </Link>
         </div>
@@ -92,19 +100,24 @@ const job = passedJob || loaderJob;
               <div className="bg-white p-6 rounded-lg shadow-md mt-6">
                 <h3 className="text-xl font-bold mb-6">Manage Job</h3>
 
+                {job.source !== "adzuna" && (
                 <Link
                   to={`/edit-job/${job?._id}`}
                   className="bg-indigo-500 hover:bg-indigo-600 text-white text-center font-bold py-2 px-4 rounded-full w-full block"
                 >
                   Edit Job
                 </Link>
+                )}
 
-                <Link
-                  onClick={() => onDeleteClick(job?._id)}
-                  className="bg-red-500 hover:bg-red-600 text-white text-center font-bold py-2 px-4 rounded-full w-full mt-4 block"
-                >
-                  Delete Job
-                </Link>
+{job.source === "db" && (
+  <button
+    onClick={() => onDeleteClick(job)}
+    className="bg-red-500 hover:bg-red-600 text-white text-center font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline"
+  >
+    Delete Job
+  </button>
+)}
+
               </div>
               )}
             </aside>
@@ -118,12 +131,22 @@ const job = passedJob || loaderJob;
 export const jobLoader = async ({ params }) => {
   const id = params.id;
 
-  if (id.startsWith("adzuna_")) return null;
+  // ✅ MongoDB job
+  if (!id.startsWith("adzuna_")) {
+    const res = await fetch(`http://localhost:5000/api/jobs/${id}`);
 
-  const res = await fetch(`http://localhost:5000/api/jobs/${id}`);
-  if (!res.ok) throw new Error("Job not found");
+    if (!res.ok) {
+      throw new Error("Job not found");
+    }
 
-  return await res.json();
+    return await res.json();
+  }
+
+  // ✅ Adzuna job fallback
+  return {
+    _id: id,
+    source: "adzuna",
+  };
 };
 
 

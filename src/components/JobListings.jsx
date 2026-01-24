@@ -2,17 +2,32 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import JobListing from "./JobListing";
 
+
 const JobListings = ({ isHome = false }) => {
   const [jobs, setJobs] = useState([]);
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState("recent");
-  
+  const cacheRef = React.useRef({});
+
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
 
 const defaultCountry = searchParams.get("country") || "recent";
 const [country, setCountry] = useState(defaultCountry);
+
+const cacheKey = `${country}-${page}`;
+
+if (cacheRef.current[cacheKey]) {
+  setJobs((prev) =>
+    page === 1
+      ? cacheRef.current[cacheKey]
+      : [...prev, ...cacheRef.current[cacheKey]]
+  );
+  setLoading(false);
+  return;
+}
+
 
 
   const fetchJobs = async () => {

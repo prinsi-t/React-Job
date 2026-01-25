@@ -1,6 +1,8 @@
-import { useParams, useLoaderData, useNavigate } from 'react-router-dom'
+import { useParams, useLoaderData, useNavigate, Link } from 'react-router-dom'
 import { useState } from 'react'
 import { useEffect } from 'react'
+import { FaArrowLeft } from 'react-icons/fa'
+
 import { toast } from 'react-toastify'
 
 const EditJobPage = ({ updateJobSubmit }) => {
@@ -15,6 +17,7 @@ const EditJobPage = ({ updateJobSubmit }) => {
     const [companyDescription, setCompanyDescription] = useState(job?.company.description || '');
     const [contactEmail, setContactEmail] = useState(job?.company.contactEmail || '');
     const [contactPhone, setContactPhone] = useState(job?.company.contactPhone || '');
+    const backSearch = location.state?.search || "";
 
     const navigate = useNavigate();
     const { id } = useParams();
@@ -60,6 +63,15 @@ const EditJobPage = ({ updateJobSubmit }) => {
       };
     
     return (
+      <>
+      <section>
+        <div className="container m-auto py-6 px-6">
+          <Link to={`/jobs${backSearch}`} className="text-indigo-500 hover:text-indigo-600 flex items-center">
+            <FaArrowLeft className="mr-2" /> Back to Job Listings
+          </Link>
+        </div>
+      </section>
+     
         <section className="bg-indigo-50">
         <div className="container m-auto max-w-2xl py-24">
           <div
@@ -242,6 +254,7 @@ const EditJobPage = ({ updateJobSubmit }) => {
           </div>
         </div>
       </section>
+      </>
     )
 }
 

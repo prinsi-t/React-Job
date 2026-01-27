@@ -42,17 +42,29 @@ app.post("/api/jobs", async (req, res) => {
 });
 
 app.get("/api/jobs/:id", async (req, res) => {
-  res.json(await Job.findById(req.params.id));
+  try {
+    const job = await Job.findById(req.params.id);
+    if (!job) return res.status(404).json({ message: "Job not found" });
+    res.json(job);
+  } catch {
+    res.status(400).json({ message: "Invalid ID" });
+  }
 });
+
 
 app.put("/api/jobs/:id", async (req, res) => {
   res.json(await Job.findByIdAndUpdate(req.params.id, req.body, { new: true }));
 });
 
 app.delete("/api/jobs/:id", async (req, res) => {
-  await Job.findByIdAndDelete(req.params.id);
-  res.json({ success: true });
+  try {
+    await Job.findByIdAndDelete(req.params.id);
+    res.json({ success: true });
+  } catch {
+    res.status(400).json({ message: "Delete failed" });
+  }
 });
+
 
 app.get("/api/live-jobs", async (req, res) => {
   try {
@@ -129,6 +141,7 @@ app.get("/api/live-jobs/:id", async (req, res) => {
 });
 
 
+const PORT = process.env.PORT || 3000;
 
 app.listen(process.env.PORT, () =>
   console.log(`Server running on port ${process.env.PORT}`)

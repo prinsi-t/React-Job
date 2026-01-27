@@ -130,10 +130,10 @@ const onDeleteClick = (job) => {
 
 export const jobLoader = async ({ params }) => {
   const id = params.id;
-
+  const API_URL = import.meta.env.VITE_API_URL;
   // ✅ MongoDB job
   if (!id.startsWith("adzuna_")) {
-    const res = await fetch(`http://localhost:5000/api/jobs/${id}`);
+    const res = await fetch(`${API_URL}/api/jobs/${id}`);
 
     if (!res.ok) {
       throw new Error("Job not found");

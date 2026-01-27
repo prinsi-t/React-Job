@@ -3,6 +3,8 @@ import { useSearchParams } from "react-router-dom";
 import JobListing from "./JobListing";
 
 
+
+
 const JobListings = ({ isHome = false }) => {
   const [jobs, setJobs] = useState([]);
   const [page, setPage] = useState(1);
@@ -28,7 +30,7 @@ if (cacheRef.current[cacheKey]) {
   return;
 }
 
-
+const API_URL = import.meta.env.VITE_API_URL;
 
   const fetchJobs = async () => {
     if (loading || !hasMore) return;
@@ -37,7 +39,7 @@ if (cacheRef.current[cacheKey]) {
     try {
       // ✅ RECENT → ONLY MONGODB
       if (country === "recent") {
-        const dbRes = await fetch("http://localhost:5000/api/jobs");
+        const dbRes = await fetch(`${API_URL}/api/jobs`);
         const dbJobs = await dbRes.json();
   
         const formattedDbJobs = dbJobs.map((job) => ({
@@ -53,7 +55,7 @@ if (cacheRef.current[cacheKey]) {
   
       // ✅ COUNTRIES → ONLY ADZUNA
       const apiRes = await fetch(
-        `http://localhost:5000/api/live-jobs?page=${page}&country=${country}`
+          `${API_URL}/api/live-jobs?page=${page}&country=${country}`
       );
   
       const apiJobs = await apiRes.json();

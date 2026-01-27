@@ -21,7 +21,7 @@ const EditJobPage = ({ updateJobSubmit }) => {
 
     const navigate = useNavigate();
     const { id } = useParams();
-
+    const API_URL = import.meta.env.VITE_API_URL;
      useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -44,7 +44,7 @@ const EditJobPage = ({ updateJobSubmit }) => {
         };
 
         // PUT to backend
-        await fetch(`http://localhost:5000/api/jobs/${id}`, {
+        await fetch(`${API_URL}/api/jobs/${id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'

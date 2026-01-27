@@ -32,6 +32,10 @@ const JobSchema = new mongoose.Schema({
 
 const Job = mongoose.model("Job", JobSchema);
 
+app.get("/", (req, res) => {
+  res.send("Jobs API is running 🚀");
+});
+
 // routes
 app.get("/api/jobs", async (req, res) => {
   res.json(await Job.find());

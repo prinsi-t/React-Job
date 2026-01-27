@@ -94,6 +94,40 @@ const onDeleteClick = (job) => {
                 <p className="my-2 bg-indigo-100 p-2 font-bold">
                   {job?.company?.contactPhone}
                 </p>
+
+                {job.source === "adzuna" && (
+  <div className="mt-4 space-y-2">
+                    <h3 className="text-xl">Category:</h3>
+
+    <p>
+    {job.category}
+    </p>
+
+    <h3 className="text-xl">Contract:</h3>
+
+    <p>
+     
+    
+        {job.contractType} • {job.type}
+      
+    </p>
+
+    <h3 className="text-xl">Posted:</h3>
+
+    <p>
+     
+        {job.posted
+          ? new Date(job.posted).toDateString()
+          : "N/A"}
+      
+    </p>
+
+    
+  </div>
+)}
+
+
+
               </div>
 
               {!job?.isExternal && (
@@ -117,6 +151,19 @@ const onDeleteClick = (job) => {
     Delete Job
   </button>
 )}
+
+{job.source === "adzuna" && job.applyLink && (
+  <a
+    href={job.applyLink}
+    target="_blank"
+    rel="noreferrer"
+    className="bg-green-600 hover:bg-green-700 text-white text-center font-bold py-2 px-4 rounded-full w-full block mt-4"
+  >
+    Apply on Company Site
+  </a>
+)}
+
+
 
               </div>
               )}

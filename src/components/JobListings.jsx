@@ -64,17 +64,18 @@ const API_URL = import.meta.env.VITE_API_URL;
         id: job.id,
         title: job.title,
         type: job.contract_time || "Full-Time",
+        contractType: job.contract_type || "Permanent",
+        category: job.category?.label || "General",
+        posted: job.created,
         location: job.location?.display_name || "Remote",
         description: job.description,
         salary:
           job.salary_min && job.salary_max
             ? `${job.salary_min} - ${job.salary_max}`
             : "Not disclosed",
+        applyLink: job.redirect_url,
         company: {
           name: job.company?.display_name || "Unknown",
-          description: job.description,
-          contactEmail: "N/A",
-          contactPhone: "N/A",
         },
         source: "adzuna",
       }));

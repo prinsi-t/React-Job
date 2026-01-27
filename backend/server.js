@@ -37,6 +37,9 @@ const JobSchema = new mongoose.Schema({
 
 const Job = mongoose.model("Job", JobSchema);
 
+let adzunaCache = {};
+
+
 app.get("/", (req, res) => {
   res.send("Jobs API is running 🚀");
 });
@@ -81,6 +84,12 @@ app.get("/api/live-jobs", async (req, res) => {
     const country = req.query.country || "in";
     const city = req.query.city || "";
     const state = req.query.state || "";
+    const cacheKey = `${country}-${page}`;
+
+if (adzunaCache[cacheKey]) {
+  return res.json(adzunaCache[cacheKey]);
+}
+
 
     const locationQuery = [city, state].filter(Boolean).join(" ");
 
@@ -97,7 +106,8 @@ app.get("/api/live-jobs", async (req, res) => {
       }
     );
 
-    res.json(data.results);
+        adzunaCache[cacheKey] = data.results;
+        res.json(data.results);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Adzuna fetch failed" });
@@ -148,6 +158,10 @@ app.get("/api/live-jobs/:id", async (req, res) => {
     res.status(500).json({ message: "Failed to load Adzuna job" });
   }
 });
+
+setInterval(() => {
+  fetch("https://your-backend.onrender.com");
+}, 1000 * 60 * 5);
 
 
 const PORT = process.env.PORT || 3000;

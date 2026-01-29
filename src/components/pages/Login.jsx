@@ -13,8 +13,7 @@ const Login = () => {
     };
 
     login(user);       // ✅ save user
-    navigate("/home", { replace: true });
-    // ✅ go home
+    navigate("/", { replace: true }); // ✅ go home (fixed from /home to /)
   };
 
   return (
@@ -26,6 +25,7 @@ const Login = () => {
         <h2 className="text-2xl font-bold mb-4">Login</h2>
 
         <input
+          name="email"
           type="email"
           placeholder="Email"
           className="w-full border p-2 rounded mb-3"
@@ -33,6 +33,7 @@ const Login = () => {
         />
 
         <input
+          name="password"
           type="password"
           placeholder="Password"
           className="w-full border p-2 rounded mb-4"

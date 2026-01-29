@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 import JobListing from "./JobListing";
-
+import { FaArrowLeft } from "react-icons/fa";
+import { useLocation } from "react-router-dom";
 
 
 
@@ -10,6 +11,8 @@ const JobListings = ({ isHome = false }) => {
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState("recent");
   const cacheRef = React.useRef({});
+  const backSearch = location.state?.search || "";
+
 
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -117,6 +120,16 @@ const API_URL = import.meta.env.VITE_API_URL;
   
 
   return (
+    <>
+    {!isHome && (
+      <section>
+        <div className="container m-auto py-6 px-6">
+          <Link to="/" className="text-indigo-500 hover:text-indigo-600 flex items-center">
+            <FaArrowLeft className="mr-2" /> Back to Home
+          </Link>
+        </div>
+      </section>
+    )}
     <section className="bg-indigo-50 px-4 py-10">
       <div className="container-xl lg:container m-auto">
         {!isHome && (
@@ -137,7 +150,7 @@ const API_URL = import.meta.env.VITE_API_URL;
               
               className="border px-4 py-2 rounded-lg"
             >
-               <option value="recent">Recent Jobs</option>
+               <option value="recent">My Jobs</option>
               <option value="in">India</option>
               <option value="us">USA</option>
               <option value="gb">UK</option>
@@ -172,6 +185,7 @@ const API_URL = import.meta.env.VITE_API_URL;
         )}
       </div>
     </section>
+    </>
   );
 };
 

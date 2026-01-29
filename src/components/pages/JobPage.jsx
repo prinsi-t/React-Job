@@ -1,5 +1,5 @@
-import React from 'react'
-import { useParams, useLoaderData, useNavigate, Link } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import { FaArrowLeft, FaMapMarker } from 'react-icons/fa'
 import { toast } from 'react-toastify'
 import { useLocation } from "react-router-dom";
@@ -8,13 +8,50 @@ import { useLocation } from "react-router-dom";
 const JobPage = ({ deleteJob }) => {
   const navigate = useNavigate()
   const { id } = useParams()
-  
   const location = useLocation();
   const backSearch = location.state?.search || "";
-const passedJob = location.state?.job;
-const loaderJob = useLoaderData();
+  const passedJob = location.state?.job;
+  
+  const [job, setJob] = useState(passedJob || null);
+  const [loading, setLoading] = useState(!passedJob);
 
-const job = passedJob || loaderJob;
+  useEffect(() => {
+    // If job was passed via state, no need to fetch
+    if (passedJob) {
+      setJob(passedJob);
+      setLoading(false);
+      return;
+    }
+
+    // Otherwise fetch the job
+    const fetchJob = async () => {
+      try {
+        const API_URL = import.meta.env.VITE_API_URL;
+        
+        // MongoDB job
+        if (!id.startsWith("adzuna_")) {
+          const res = await fetch(`${API_URL}/api/jobs/${id}`);
+          if (!res.ok) throw new Error("Job not found");
+          const data = await res.json();
+          setJob(data);
+        } else {
+          // Adzuna job fallback
+          setJob({
+            _id: id,
+            source: "adzuna",
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to load job");
+        navigate("/jobs");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchJob();
+  }, [id, passedJob, navigate]);
 
 
 const onDeleteClick = (job) => {
@@ -32,6 +69,21 @@ const onDeleteClick = (job) => {
   navigate("/jobs");
 };
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin h-12 w-12 border-4 border-indigo-500 border-t-transparent rounded-full"></div>
+      </div>
+    );
+  }
+
+  if (!job) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <p className="text-xl">Job not found</p>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -146,7 +198,7 @@ const onDeleteClick = (job) => {
 {job.source === "db" && (
   <button
     onClick={() => onDeleteClick(job)}
-    className="bg-red-500 hover:bg-red-600 text-white text-center font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline"
+    className="bg-red-500 hover:bg-red-600 text-white text-center font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline mt-4"
   >
     Delete Job
   </button>
@@ -174,28 +226,5 @@ const onDeleteClick = (job) => {
     </>
   )
 }
-
-export const jobLoader = async ({ params }) => {
-  const id = params.id;
-  const API_URL = import.meta.env.VITE_API_URL;
-  // ✅ MongoDB job
-  if (!id.startsWith("adzuna_")) {
-    const res = await fetch(`${API_URL}/api/jobs/${id}`);
-
-    if (!res.ok) {
-      throw new Error("Job not found");
-    }
-
-    return await res.json();
-  }
-
-  // ✅ Adzuna job fallback
-  return {
-    _id: id,
-    source: "adzuna",
-  };
-};
-
-
 
 export default JobPage

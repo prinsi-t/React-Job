@@ -28,7 +28,7 @@ const JobListing = ({job}) => {
                       </div>
 
                       <button onClick={() => setShowFullDescription((prevState) => !prevState)} className="text-indigo-500 mb-5 hover:text-indigo-600">
-                        {showFullDescription ? 'Show Less' : 'Read More'}
+                        {showFullDescription ? 'Less' : 'More'}
                       </button>
 
                       <h3 className="text-indigo-500 mb-2 mt-4">{job?.salary} / Year</h3>
@@ -42,7 +42,7 @@ const JobListing = ({job}) => {
                         state={{job, search: window.location.search }}
                             onClick={() => window.scrollTo(0, 0)} 
                             className="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg text-center text-sm">
-                        Read More
+                        View Details
                       </Link>
                       </div>
                     

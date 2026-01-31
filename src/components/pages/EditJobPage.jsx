@@ -1,72 +1,110 @@
-import { useParams, useLoaderData, useNavigate, Link } from 'react-router-dom'
-import { useState } from 'react'
-import { useEffect } from 'react'
+import { useParams, useNavigate, Link, useLocation } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 import { FaArrowLeft } from 'react-icons/fa'
-
 import { toast } from 'react-toastify'
 
 const EditJobPage = ({ updateJobSubmit }) => {
-    const job = useLoaderData();
-
-    const [title, setTitle] = useState(job?.title || '');
-    const [type, setType] = useState(job?.type || '');
-    const [description, setDescription] = useState(job?.description || '');
-    const [salary, setSalary] = useState(job?.salary || '');
-    const [location, setLocation] = useState(job?.location || '');
-    const [companyName, setCompanyName] = useState(job?.company.name || '');
-    const [companyDescription, setCompanyDescription] = useState(job?.company.description || '');
-    const [contactEmail, setContactEmail] = useState(job?.company.contactEmail || '');
-    const [contactPhone, setContactPhone] = useState(job?.company.contactPhone || '');
-    const backSearch = location.state?.search || "";
-
-    const navigate = useNavigate();
     const { id } = useParams();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const passedJob = location.state?.job;
+
+    const [title, setTitle] = useState('');
+    const [type, setType] = useState('');
+    const [description, setDescription] = useState('');
+    const [salary, setSalary] = useState('');
+    const [jobLocation, setJobLocation] = useState('');
+    const [companyName, setCompanyName] = useState('');
+    const [companyDescription, setCompanyDescription] = useState('');
+    const [contactEmail, setContactEmail] = useState('');
+    const [contactPhone, setContactPhone] = useState('');
+    const [loading, setLoading] = useState(true);
+
     const API_URL = import.meta.env.VITE_API_URL;
-     useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
 
-        const submitForm = async (e) => {
-        e.preventDefault();
-
-        const updatedJob = {
-          title,
-          type,
-          location,
-          description,
-          salary,
-          company: {
-            name: companyName,
-            description: companyDescription,
-            contactEmail,
-            contactPhone
+    useEffect(() => {
+      window.scrollTo(0, 0);
+      
+      const fetchJob = async () => {
+        let job = passedJob;
+        
+        // If job wasn't passed via state, fetch it
+        if (!job) {
+          try {
+            const res = await fetch(`${API_URL}/api/jobs/${id}`);
+            if (!res.ok) throw new Error("Job not found");
+            job = await res.json();
+          } catch (error) {
+            console.error(error);
+            toast.error("Failed to load job");
+            navigate("/jobs");
+            return;
           }
-        };
+        }
 
-        // PUT to backend
-        await fetch(`${API_URL}/api/jobs/${id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(updatedJob)
-        });
-
-        // toaster
-        toast.success('Job updated successfully');
-
-        // redirect to updated job page AND reload data
-        navigate(`/jobs/${id}`);
-        window.scrollTo(0, 0);
-
-
+        // Set form values
+        if (job) {
+          setTitle(job.title || '');
+          setType(job.type || '');
+          setDescription(job.description || '');
+          setSalary(job.salary || '');
+          setJobLocation(job.location || '');
+          setCompanyName(job.company?.name || '');
+          setCompanyDescription(job.company?.description || '');
+          setContactEmail(job.company?.contactEmail || '');
+          setContactPhone(job.company?.contactPhone || '');
+        }
+        
+        setLoading(false);
       };
+
+      fetchJob();
+    }, [id, passedJob, navigate, API_URL]);
+
+    const submitForm = async (e) => {
+      e.preventDefault();
+
+      const updatedJob = {
+        title,
+        type,
+        location: jobLocation,
+        description,
+        salary,
+        company: {
+          name: companyName,
+          description: companyDescription,
+          contactEmail,
+          contactPhone
+        }
+      };
+
+      // PUT to backend
+      await fetch(`${API_URL}/api/jobs/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedJob)
+      });
+
+      toast.success('Job updated successfully');
+      navigate(`/jobs/${id}`);
+      window.scrollTo(0, 0);
+    };
+
+    if (loading) {
+      return (
+        <div className="flex justify-center items-center min-h-screen">
+          <div className="animate-spin h-12 w-12 border-4 border-indigo-500 border-t-transparent rounded-full"></div>
+        </div>
+      );
+    }
     
     return (
       <>
       <section>
         <div className="container m-auto py-6 px-6">
-          <Link to={`/jobs${backSearch}`} className="text-indigo-500 hover:text-indigo-600 flex items-center">
+          <Link to="/jobs" className="text-indigo-500 hover:text-indigo-600 flex items-center">
             <FaArrowLeft className="mr-2" /> Back to Job Listings
           </Link>
         </div>
@@ -109,7 +147,7 @@ const EditJobPage = ({ updateJobSubmit }) => {
                   id="title"
                   name="title"
                   className="border rounded w-full py-2 px-3 mb-2"
-                  placeholder="eg. Beautiful Apartment In Miami"
+                  placeholder="eg. Senior React Developer"
                   required
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
@@ -169,8 +207,8 @@ const EditJobPage = ({ updateJobSubmit }) => {
                   className='border rounded w-full py-2 px-3 mb-2'
                   placeholder='Company Location'
                   required           
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
+                  value={jobLocation}
+                  onChange={(e) => setJobLocation(e.target.value)}
                 />
               </div>
   

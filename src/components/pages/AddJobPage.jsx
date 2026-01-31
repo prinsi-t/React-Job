@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom';
 import { FaArrowLeft} from 'react-icons/fa'
 import { toast } from 'react-toastify'
+import { useAuth } from '../../context/AuthContext';
 
 const AddJobPage = ({ addJobSubmit}) => {
     const [title, setTitle] = useState('');
@@ -15,6 +16,7 @@ const AddJobPage = ({ addJobSubmit}) => {
     const [contactPhone, setContactPhone] = useState('');
     
     const navigate = useNavigate();
+    const { user } = useAuth();
     
     const submitForm = (e) => {
       e.preventDefault();
@@ -25,6 +27,7 @@ const AddJobPage = ({ addJobSubmit}) => {
         location,
         description,
         salary,
+        userEmail: user?.email, // ✅ Track who created this job
         company : {
           name: companyName,
           description: companyDescription,
@@ -85,7 +88,7 @@ const AddJobPage = ({ addJobSubmit}) => {
                   id="title"
                   name="title"
                   className="border rounded w-full py-2 px-3 mb-2"
-                  placeholder="eg. Beautiful Apartment In Miami"
+                  placeholder="eg. Senior React Developer"
                   required
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}

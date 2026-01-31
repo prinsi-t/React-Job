@@ -150,7 +150,7 @@ const API_URL = import.meta.env.VITE_API_URL;
               
               className="border px-4 py-2 rounded-lg"
             >
-               <option value="recent">My Jobs</option>
+               <option value="recent">Recent Jobs</option>
               <option value="in">India</option>
               <option value="us">USA</option>
               <option value="gb">UK</option>

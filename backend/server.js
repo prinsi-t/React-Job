@@ -27,6 +27,7 @@ const JobSchema = new mongoose.Schema({
   location: String,
   description: String,
   salary: String,
+  userEmail: String,  // ✅ Track who created the job
   company: {
     name: String,
     description: String,
@@ -50,7 +51,12 @@ app.get("/api/jobs", async (req, res) => {
 });
 
 app.post("/api/jobs", async (req, res) => {
-  res.json(await Job.create(req.body));
+  try {
+    const job = await Job.create(req.body);  // This will include userEmail from req.body
+    res.json(job);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 });
 
 app.get("/api/jobs/:id", async (req, res) => {

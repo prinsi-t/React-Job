@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { FaArrowLeft, FaMapMarker } from 'react-icons/fa'
 import { toast } from 'react-toastify'
 import { useLocation } from "react-router-dom";
+import { useAuth } from '../../context/AuthContext';
 
 
 const JobPage = ({ deleteJob }) => {
@@ -11,36 +12,37 @@ const JobPage = ({ deleteJob }) => {
   const location = useLocation();
   const backSearch = location.state?.search || "";
   const passedJob = location.state?.job;
+  const { user } = useAuth();
   
-  const [job, setJob] = useState(passedJob || null);
-  const [loading, setLoading] = useState(!passedJob);
+  const [job, setJob] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // If job was passed via state, no need to fetch
-    if (passedJob) {
-      setJob(passedJob);
-      setLoading(false);
-      return;
-    }
-
-    // Otherwise fetch the job
     const fetchJob = async () => {
       try {
         const API_URL = import.meta.env.VITE_API_URL;
         
-        // MongoDB job
-        if (!id.startsWith("adzuna_")) {
-          const res = await fetch(`${API_URL}/api/jobs/${id}`);
-          if (!res.ok) throw new Error("Job not found");
-          const data = await res.json();
-          setJob(data);
-        } else {
-          // Adzuna job fallback
+        // Check if it's an Adzuna job
+        if (id.startsWith("adzuna_")) {
           setJob({
             _id: id,
             source: "adzuna",
           });
+          setLoading(false);
+          return;
         }
+        
+        // MongoDB job - always fetch fresh to get latest data
+        const res = await fetch(`${API_URL}/api/jobs/${id}`);
+        if (!res.ok) throw new Error("Job not found");
+        const data = await res.json();
+        
+        // ✅ IMPORTANT: Always mark MongoDB jobs with source: "db"
+        setJob({
+          ...data,
+          source: "db"
+        });
+        
       } catch (error) {
         console.error(error);
         toast.error("Failed to load job");
@@ -51,23 +53,16 @@ const JobPage = ({ deleteJob }) => {
     };
 
     fetchJob();
-  }, [id, passedJob, navigate]);
+  }, [id, navigate]); // Re-fetch when ID changes
 
+  const onDeleteClick = (job) => {
+    const confirm = window.confirm("Are you sure you want to delete this job?");
+    if (!confirm) return;
 
-const onDeleteClick = (job) => {
-  // ✅ Block Adzuna deletes only
-  if (!job._id) {
-    toast.info("Live jobs cannot be deleted");
-    return;
-  }
-
-  const confirm = window.confirm("Are you sure you want to delete this job?");
-  if (!confirm) return;
-
-  deleteJob(job._id);
-  toast.success("Job deleted successfully");
-  navigate("/jobs");
-};
+    deleteJob(job._id);
+    toast.success("Job deleted successfully");
+    navigate("/jobs");
+  };
 
   if (loading) {
     return (
@@ -84,6 +79,11 @@ const onDeleteClick = (job) => {
       </div>
     );
   }
+
+  // ✅ Check if current user is the job owner
+  const isOwner = job.source === "db" && 
+                  job.userEmail && 
+                  job.userEmail === user?.email;
 
   return (
     <>
@@ -148,62 +148,57 @@ const onDeleteClick = (job) => {
                 </p>
 
                 {job.source === "adzuna" && (
-  <div className="mt-4 space-y-2">
+                  <div className="mt-4 space-y-2">
                     <h3 className="text-xl">Category:</h3>
+                    <p>{job.category}</p>
 
-    <p>
-    {job.category}
-    </p>
+                    <h3 className="text-xl">Contract:</h3>
+                    <p>{job.contractType} • {job.type}</p>
 
-    <h3 className="text-xl">Contract:</h3>
-
-    <p>
-     
-    
-        {job.contractType} • {job.type}
-      
-    </p>
-
-    <h3 className="text-xl">Posted:</h3>
-
-    <p>
-     
-        {job.posted
-          ? new Date(job.posted).toDateString()
-          : "N/A"}
-      
-    </p>
-
-    
-  </div>
-)}
-
-
-
+                    <h3 className="text-xl">Posted:</h3>
+                    <p>
+                      {job.posted
+                        ? new Date(job.posted).toDateString()
+                        : "N/A"}
+                    </p>
+                  </div>
+                )}
               </div>
 
-              {!job?.isExternal && (
-              <div className="bg-white p-6 rounded-lg shadow-md mt-6">
-                <h3 className="text-xl font-bold mb-6">Manage Job</h3>
+              {/* ✅ Show edit/delete ONLY for job owner */}
+              {isOwner && (
+                <div className="bg-white p-6 rounded-lg shadow-md mt-6">
+                  <h3 className="text-xl font-bold mb-6">Manage Job</h3>
 
-                
+                  <Link
+                    to={`/edit-job/${job?._id}`}
+                    state={{ job }}
+                    className="bg-indigo-500 hover:bg-indigo-600 text-white text-center font-bold py-2 px-4 rounded-full w-full block"
+                  >
+                    Edit Job
+                  </Link>
 
+                  <button
+                    onClick={() => onDeleteClick(job)}
+                    className="bg-red-500 hover:bg-red-600 text-white text-center font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline mt-4"
+                  >
+                    Delete Job
+                  </button>
+                </div>
+              )}
 
-
-{job.source === "adzuna" && job.applyLink && (
-  <a
-    href={job.applyLink}
-    target="_blank"
-    rel="noreferrer"
-    className="bg-green-600 hover:bg-green-700 text-white text-center font-bold py-2 px-4 rounded-full w-full block mt-4"
-  >
-    Apply on Company Site
-  </a>
-)}
-
-
-
-              </div>
+              {/* Show apply button for Adzuna jobs */}
+              {job.source === "adzuna" && job.applyLink && (
+                <div className="bg-white p-6 rounded-lg shadow-md mt-6">
+                  <a
+                    href={job.applyLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="bg-green-600 hover:bg-green-700 text-white text-center font-bold py-2 px-4 rounded-full w-full block"
+                  >
+                    Apply on Company Site
+                  </a>
+                </div>
               )}
             </aside>
           </div>

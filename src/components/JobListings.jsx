@@ -50,7 +50,10 @@ const API_URL = import.meta.env.VITE_API_URL;
           source: "db",
         }));
   
-        setJobs(isHome ? formattedDbJobs.slice(0, 3) : formattedDbJobs);
+        setJobs(isHome ? formattedDbJobs.slice(0, 3) : []);
+setJobs(isHome ? formattedDbJobs.slice(0, 3) : formattedDbJobs.reverse());
+
+        
         setHasMore(false);
         setLoading(false);
         return;

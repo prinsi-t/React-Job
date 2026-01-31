@@ -208,4 +208,4 @@ const JobPage = ({ deleteJob }) => {
   )
 }
 
-export default JobPage
+export default JobPage  

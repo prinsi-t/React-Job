@@ -20,20 +20,22 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch(err => console.log(err));
 
-// schema
+// schema with timestamps
 const JobSchema = new mongoose.Schema({
   title: String,
   type: String,
   location: String,
   description: String,
   salary: String,
-  userEmail: String,  // ✅ Track who created the job
+  userEmail: String,
   company: {
     name: String,
     description: String,
     contactEmail: String,
     contactPhone: String,
   },
+}, {
+  timestamps: true  // ✅ Automatically adds createdAt and updatedAt
 });
 
 const Job = mongoose.model("Job", JobSchema);
@@ -45,14 +47,15 @@ app.get("/", (req, res) => {
   res.send("Jobs API is running 🚀");
 });
 
-// routes
+// routes - GET jobs sorted by newest first
 app.get("/api/jobs", async (req, res) => {
-  res.json(await Job.find());
+  const jobs = await Job.find().sort({ createdAt: -1 }); // ✅ Sort by newest first
+  res.json(jobs);
 });
 
 app.post("/api/jobs", async (req, res) => {
   try {
-    const job = await Job.create(req.body);  // This will include userEmail from req.body
+    const job = await Job.create(req.body);
     res.json(job);
   } catch (err) {
     res.status(500).json({ message: err.message });

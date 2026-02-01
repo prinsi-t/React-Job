@@ -31,7 +31,7 @@ const JobListing = ({job}) => {
                         {showFullDescription ? 'Less' : 'More'}
                       </button>
 
-                      <h3 className="text-indigo-500 mb-2 mt-4">{job?.salary} / Year</h3>
+                      <h3 className="text-indigo-500 mb-2 mt-4">{job?.salary}</h3>
                       <div className="border-t border-gray-100 mb-5 mt-2"></div>
                       <div className="flex lg:flex-row justify-between mb-4 items-center">
                         <div className="text-red-700 mb-3 flex items-center">

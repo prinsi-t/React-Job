@@ -4,44 +4,37 @@ import JobListing from "./JobListing";
 import { FaArrowLeft } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 
-
-
 const JobListings = ({ isHome = false }) => {
   const [jobs, setJobs] = useState([]);
   const [page, setPage] = useState(1);
-  const [sort, setSort] = useState("recent");
   const cacheRef = React.useRef({});
-  const backSearch = location.state?.search || "";
-
 
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
 
-const defaultCountry = searchParams.get("country") || "recent";
-const [country, setCountry] = useState(defaultCountry);
+  const defaultCountry = searchParams.get("country") || "recent";
+  const [country, setCountry] = useState(defaultCountry);
 
-const cacheKey = `${country}-${page}`;
-
-if (cacheRef.current[cacheKey]) {
-  setJobs((prev) =>
-    page === 1
-      ? cacheRef.current[cacheKey]
-      : [...prev, ...cacheRef.current[cacheKey]]
-  );
-  setLoading(false);
-  return;
-}
-
-const API_URL = import.meta.env.VITE_API_URL;
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const fetchJobs = async () => {
     if (loading || !hasMore) return;
     setLoading(true);
   
     try {
-      // ✅ RECENT → ONLY MONGODB
+      // ✅ RECENT → ONLY MONGODB (already sorted by backend)
       if (country === "recent") {
+        const cacheKey = `recent`;
+        
+        if (cacheRef.current[cacheKey]) {
+          const cachedJobs = cacheRef.current[cacheKey];
+          setJobs(isHome ? cachedJobs.slice(0, 3) : cachedJobs);
+          setLoading(false);
+          setHasMore(false);
+          return;
+        }
+
         const dbRes = await fetch(`${API_URL}/api/jobs`);
         const dbJobs = await dbRes.json();
   
@@ -49,17 +42,27 @@ const API_URL = import.meta.env.VITE_API_URL;
           ...job,
           source: "db",
         }));
-  
-        setJobs(isHome ? formattedDbJobs.slice(0, 3) : []);
-setJobs(isHome ? formattedDbJobs.slice(0, 3) : formattedDbJobs.reverse());
 
-        
+        cacheRef.current[cacheKey] = formattedDbJobs;
+        setJobs(isHome ? formattedDbJobs.slice(0, 3) : formattedDbJobs);
         setHasMore(false);
         setLoading(false);
         return;
       }
   
       // ✅ COUNTRIES → ONLY ADZUNA
+      const cacheKey = `${country}-${page}`;
+      
+      if (cacheRef.current[cacheKey]) {
+        setJobs((prev) =>
+          page === 1
+            ? cacheRef.current[cacheKey]
+            : [...prev, ...cacheRef.current[cacheKey]]
+        );
+        setLoading(false);
+        return;
+      }
+
       const apiRes = await fetch(
           `${API_URL}/api/live-jobs?page=${page}&country=${country}`
       );
@@ -85,6 +88,8 @@ setJobs(isHome ? formattedDbJobs.slice(0, 3) : formattedDbJobs.reverse());
         },
         source: "adzuna",
       }));
+
+      cacheRef.current[cacheKey] = formattedApiJobs;
   
       setJobs((prev) =>
         page === 1 ? formattedApiJobs : [...prev, ...formattedApiJobs]
@@ -103,7 +108,6 @@ setJobs(isHome ? formattedDbJobs.slice(0, 3) : formattedDbJobs.reverse());
   useEffect(() => {
     setJobs([]);
     setPage(1);
-
     setHasMore(true);
     fetchJobs();
   }, [country]);
@@ -137,8 +141,6 @@ setJobs(isHome ? formattedDbJobs.slice(0, 3) : formattedDbJobs.reverse());
       <div className="container-xl lg:container m-auto">
         {!isHome && (
           <div className="flex justify-center gap-4 mb-6">
-            
-
             <select
               value={country}
               onChange={(e) => {

@@ -20,24 +20,31 @@ const JobPage = ({ deleteJob }) => {
   useEffect(() => {
     const fetchJob = async () => {
       try {
-        const API_URL = import.meta.env.VITE_API_URL;
-        
-        // Check if it's an Adzuna job
-        if (id.startsWith("adzuna_")) {
+        // ✅ If Adzuna job and data was passed via state, use it
+        if (id.startsWith("adzuna_") && passedJob) {
           setJob({
-            _id: id,
-            source: "adzuna",
+            ...passedJob,
+            source: "adzuna"
           });
           setLoading(false);
           return;
         }
+
+        // ✅ If Adzuna job but no data passed, we can't fetch it
+        if (id.startsWith("adzuna_")) {
+          toast.error("Job data not available");
+          navigate("/jobs");
+          return;
+        }
+
+        const API_URL = import.meta.env.VITE_API_URL;
         
-        // MongoDB job - always fetch fresh to get latest data
+        // ✅ MongoDB job - fetch fresh data
         const res = await fetch(`${API_URL}/api/jobs/${id}`);
         if (!res.ok) throw new Error("Job not found");
         const data = await res.json();
         
-        // ✅ IMPORTANT: Always mark MongoDB jobs with source: "db"
+        // Always mark MongoDB jobs with source: "db"
         setJob({
           ...data,
           source: "db"
@@ -53,7 +60,7 @@ const JobPage = ({ deleteJob }) => {
     };
 
     fetchJob();
-  }, [id, navigate]); // Re-fetch when ID changes
+  }, [id, navigate, passedJob]);
 
   const onDeleteClick = (job) => {
     const confirm = window.confirm("Are you sure you want to delete this job?");
@@ -150,16 +157,16 @@ const JobPage = ({ deleteJob }) => {
                 {job.source === "adzuna" && (
                   <div className="mt-4 space-y-2">
                     <h3 className="text-xl">Category:</h3>
-                    <p>{job.category}</p>
+                    <p className="bg-indigo-100 p-2">{job.category || "General"}</p>
 
                     <h3 className="text-xl">Contract:</h3>
-                    <p>{job.contractType} • {job.type}</p>
+                    <p className="bg-indigo-100 p-2">{job.contractType || "Permanent"} • {job.type || "Full-Time"}</p>
 
                     <h3 className="text-xl">Posted:</h3>
-                    <p>
+                    <p className="bg-indigo-100 p-2">
                       {job.posted
                         ? new Date(job.posted).toDateString()
-                        : "N/A"}
+                        : "Recently"}
                     </p>
                   </div>
                 )}
@@ -190,13 +197,14 @@ const JobPage = ({ deleteJob }) => {
               {/* Show apply button for Adzuna jobs */}
               {job.source === "adzuna" && job.applyLink && (
                 <div className="bg-white p-6 rounded-lg shadow-md mt-6">
+                  <h3 className="text-xl font-bold mb-6">Apply</h3>
                   <a
                     href={job.applyLink}
                     target="_blank"
                     rel="noreferrer"
                     className="bg-green-600 hover:bg-green-700 text-white text-center font-bold py-2 px-4 rounded-full w-full block"
                   >
-                    Apply on Company Site
+                    Apply on Company Website
                   </a>
                 </div>
               )}
@@ -208,4 +216,4 @@ const JobPage = ({ deleteJob }) => {
   )
 }
 
-export default JobPage  
+export default JobPage

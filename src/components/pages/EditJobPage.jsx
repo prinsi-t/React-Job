@@ -11,6 +11,8 @@ const EditJobPage = ({ updateJobSubmit }) => {
 
     const [title, setTitle] = useState('');
     const [type, setType] = useState('');
+    const [contractType, setContractType] = useState('');
+    const [category, setCategory] = useState('');
     const [description, setDescription] = useState('');
     const [salary, setSalary] = useState('');
     const [jobLocation, setJobLocation] = useState('');
@@ -45,9 +47,11 @@ const EditJobPage = ({ updateJobSubmit }) => {
         // Set form values
         if (job) {
           setTitle(job.title || '');
-          setType(job.type || '');
+          setType(job.type || 'Full-Time');
+          setContractType(job.contractType || 'Permanent');
+          setCategory(job.category || 'Software Development');
           setDescription(job.description || '');
-          setSalary(job.salary || '');
+          setSalary(job.salary || 'Under $50K');
           setJobLocation(job.location || '');
           setCompanyName(job.company?.name || '');
           setCompanyDescription(job.company?.description || '');
@@ -67,6 +71,8 @@ const EditJobPage = ({ updateJobSubmit }) => {
       const updatedJob = {
         title,
         type,
+        contractType,
+        category,
         location: jobLocation,
         description,
         salary,
@@ -133,13 +139,65 @@ const EditJobPage = ({ updateJobSubmit }) => {
                   <option value="Full-Time">Full-Time</option>
                   <option value="Part-Time">Part-Time</option>
                   <option value="Remote">Remote</option>
+                  <option value="Contract">Contract</option>
                   <option value="Internship">Internship</option> 
+                </select>
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="contractType" className="block text-gray-700 font-bold mb-2"
+                  >Contract Type</label
+                >
+                <select
+                  id="contractType"
+                  name="contractType"
+                  className="border rounded w-full py-2 px-3"
+                  required
+                  value={contractType}
+                  onChange={(e) => setContractType(e.target.value)}
+                >
+                  <option value="Permanent">Permanent</option>
+                  <option value="Temporary">Temporary</option>
+                  <option value="Contract">Contract</option>
+                  <option value="Freelance">Freelance</option>
+                </select>
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="category" className="block text-gray-700 font-bold mb-2"
+                  >Category</label
+                >
+                <select
+                  id="category"
+                  name="category"
+                  className="border rounded w-full py-2 px-3"
+                  required
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                >
+                  <option value="Software Development">Software Development</option>
+                  <option value="Web Development">Web Development</option>
+                  <option value="Mobile Development">Mobile Development</option>
+                  <option value="Data Science">Data Science</option>
+                  <option value="DevOps">DevOps</option>
+                  <option value="UI/UX Design">UI/UX Design</option>
+                  <option value="Product Management">Product Management</option>
+                  <option value="Project Management">Project Management</option>
+                  <option value="Quality Assurance">Quality Assurance</option>
+                  <option value="Database Administration">Database Administration</option>
+                  <option value="Network Engineering">Network Engineering</option>
+                  <option value="Cybersecurity">Cybersecurity</option>
+                  <option value="IT Support">IT Support</option>
+                  <option value="Marketing">Marketing</option>
+                  <option value="Sales">Sales</option>
+                  <option value="Customer Service">Customer Service</option>
+                  <option value="Other">Other</option>
                 </select>
               </div>
   
               <div className="mb-4">
                 <label className="block text-gray-700 font-bold mb-2"
-                  >Job Listing Name
+                  >Job Title
                   </label>
 
                 <input
@@ -171,7 +229,7 @@ const EditJobPage = ({ updateJobSubmit }) => {
               </div>
   
               <div className="mb-4">
-                <label htmlFor="type" className="block text-gray-700 font-bold mb-2"
+                <label htmlFor="salary" className="block text-gray-700 font-bold mb-2"
                   >Salary
                   </label>
                 <select

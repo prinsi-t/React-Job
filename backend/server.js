@@ -20,14 +20,17 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch(err => console.log(err));
 
-// schema with timestamps
+// schema with all Adzuna-like fields
 const JobSchema = new mongoose.Schema({
   title: String,
   type: String,
+  contractType: String,  // ✅ NEW: Permanent, Temporary, Contract, Freelance
+  category: String,      // ✅ NEW: Software Development, Web Development, etc.
   location: String,
   description: String,
   salary: String,
   userEmail: String,
+  posted: String,        // ✅ NEW: Posted date
   company: {
     name: String,
     description: String,
@@ -35,7 +38,7 @@ const JobSchema = new mongoose.Schema({
     contactPhone: String,
   },
 }, {
-  timestamps: true  // ✅ Automatically adds createdAt and updatedAt
+  timestamps: true
 });
 
 const Job = mongoose.model("Job", JobSchema);
@@ -49,7 +52,7 @@ app.get("/", (req, res) => {
 
 // routes - GET jobs sorted by newest first
 app.get("/api/jobs", async (req, res) => {
-  const jobs = await Job.find().sort({ createdAt: -1 }); // ✅ Sort by newest first
+  const jobs = await Job.find().sort({ createdAt: -1 });
   res.json(jobs);
 });
 

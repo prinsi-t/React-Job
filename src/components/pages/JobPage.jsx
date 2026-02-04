@@ -154,20 +154,33 @@ const JobPage = ({ deleteJob }) => {
                   {job?.company?.contactPhone}
                 </p>
 
-                {job.source === "adzuna" && (
+                {/* ✅ Show additional details for both DB and Adzuna jobs */}
+                {(job.category || job.contractType || job.type || job.posted) && (
                   <div className="mt-4 space-y-2">
-                    <h3 className="text-xl">Category:</h3>
-                    <p className="bg-indigo-100 p-2">{job.category || "General"}</p>
+                    {job.category && (
+                      <>
+                        <h3 className="text-xl">Category:</h3>
+                        <p className="bg-indigo-100 p-2">{job.category}</p>
+                      </>
+                    )}
 
-                    <h3 className="text-xl">Contract:</h3>
-                    <p className="bg-indigo-100 p-2">{job.contractType || "Permanent"} • {job.type || "Full-Time"}</p>
+                    {(job.contractType || job.type) && (
+                      <>
+                        <h3 className="text-xl">Contract:</h3>
+                        <p className="bg-indigo-100 p-2">
+                          {job.contractType || "Permanent"} • {job.type || "Full-Time"}
+                        </p>
+                      </>
+                    )}
 
-                    <h3 className="text-xl">Posted:</h3>
-                    <p className="bg-indigo-100 p-2">
-                      {job.posted
-                        ? new Date(job.posted).toDateString()
-                        : "Recently"}
-                    </p>
+                    {job.posted && (
+                      <>
+                        <h3 className="text-xl">Posted:</h3>
+                        <p className="bg-indigo-100 p-2">
+                          {new Date(job.posted).toDateString()}
+                        </p>
+                      </>
+                    )}
                   </div>
                 )}
               </div>

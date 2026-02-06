@@ -20,17 +20,18 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch(err => console.log(err));
 
-// schema with all Adzuna-like fields
+// schema with all fields including applyLink
 const JobSchema = new mongoose.Schema({
   title: String,
   type: String,
-  contractType: String,  // ✅ NEW: Permanent, Temporary, Contract, Freelance
-  category: String,      // ✅ NEW: Software Development, Web Development, etc.
+  contractType: String,
+  category: String,
   location: String,
   description: String,
   salary: String,
+  applyLink: String,    // ✅ NEW: Application link
   userEmail: String,
-  posted: String,        // ✅ NEW: Posted date
+  posted: String,
   company: {
     name: String,
     description: String,

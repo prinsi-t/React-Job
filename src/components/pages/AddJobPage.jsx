@@ -16,6 +16,7 @@ const AddJobPage = ({ addJobSubmit}) => {
     const [companyDescription, setCompanyDescription] = useState('');
     const [contactEmail, setContactEmail] = useState('');
     const [contactPhone, setContactPhone] = useState('');
+    const [applyLink, setApplyLink] = useState(''); // ✅ NEW: Application link
     
     const navigate = useNavigate();
     const { user } = useAuth();
@@ -31,8 +32,9 @@ const AddJobPage = ({ addJobSubmit}) => {
         location,
         description,
         salary,
+        applyLink, // ✅ Include apply link
         userEmail: user?.email,
-        posted: new Date().toISOString(), // Add posted date
+        posted: new Date().toISOString(),
         company : {
           name: companyName,
           description: companyDescription,
@@ -208,6 +210,23 @@ const AddJobPage = ({ addJobSubmit}) => {
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                 />
+              </div>
+
+              {/* ✅ NEW: Application Link */}
+              <div className='mb-4'>
+                <label className='block text-gray-700 font-bold mb-2'>
+                  Application Link (Optional)
+                </label>
+                <input
+                  type='url'
+                  id='applyLink'
+                  name='applyLink'
+                  className='border rounded w-full py-2 px-3 mb-2'
+                  placeholder='https://company.com/apply or mailto:jobs@company.com'
+                  value={applyLink}
+                  onChange={(e) => setApplyLink(e.target.value)}
+                />
+                <p className="text-sm text-gray-600">Where should applicants go to apply? Leave blank to use contact email.</p>
               </div>
   
               <h3 className="text-2xl mb-5">Company Info</h3>

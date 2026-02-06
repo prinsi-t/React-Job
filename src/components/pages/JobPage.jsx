@@ -20,7 +20,6 @@ const JobPage = ({ deleteJob }) => {
   useEffect(() => {
     const fetchJob = async () => {
       try {
-        // ✅ If Adzuna job and data was passed via state, use it
         if (id.startsWith("adzuna_") && passedJob) {
           setJob({
             ...passedJob,
@@ -30,7 +29,6 @@ const JobPage = ({ deleteJob }) => {
           return;
         }
 
-        // ✅ If Adzuna job but no data passed, we can't fetch it
         if (id.startsWith("adzuna_")) {
           toast.error("Job data not available");
           navigate("/jobs");
@@ -39,12 +37,10 @@ const JobPage = ({ deleteJob }) => {
 
         const API_URL = import.meta.env.VITE_API_URL;
         
-        // ✅ MongoDB job - fetch fresh data
         const res = await fetch(`${API_URL}/api/jobs/${id}`);
         if (!res.ok) throw new Error("Job not found");
         const data = await res.json();
         
-        // Always mark MongoDB jobs with source: "db"
         setJob({
           ...data,
           source: "db"
@@ -87,10 +83,27 @@ const JobPage = ({ deleteJob }) => {
     );
   }
 
-  // ✅ Check if current user is the job owner
   const isOwner = job.source === "db" && 
                   job.userEmail && 
                   job.userEmail === user?.email;
+
+  // ✅ Determine apply link (custom link, contact email, or Adzuna link)
+  const getApplyLink = () => {
+    if (job.source === "adzuna" && job.applyLink) {
+      return job.applyLink;
+    }
+    if (job.source === "db") {
+      if (job.applyLink) {
+        return job.applyLink;
+      }
+      if (job.company?.contactEmail) {
+        return `mailto:${job.company.contactEmail}`;
+      }
+    }
+    return null;
+  };
+
+  const applyLink = getApplyLink();
 
   return (
     <>
@@ -154,7 +167,6 @@ const JobPage = ({ deleteJob }) => {
                   {job?.company?.contactPhone}
                 </p>
 
-                {/* ✅ Show additional details for both DB and Adzuna jobs */}
                 {(job.category || job.contractType || job.type || job.posted) && (
                   <div className="mt-4 space-y-2">
                     {job.category && (
@@ -185,6 +197,21 @@ const JobPage = ({ deleteJob }) => {
                 )}
               </div>
 
+              {/* ✅ Show Apply button for ALL jobs (DB and Adzuna) */}
+              {applyLink && !isOwner && (
+                <div className="bg-white p-6 rounded-lg shadow-md mt-6">
+                  <h3 className="text-xl font-bold mb-6">Apply for this Job</h3>
+                  <a
+                    href={applyLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="bg-green-600 hover:bg-green-700 text-white text-center font-bold py-2 px-4 rounded-full w-full block"
+                  >
+                    {applyLink.startsWith('mailto:') ? 'Apply via Email' : 'Apply on Company Website'}
+                  </a>
+                </div>
+              )}
+
               {/* ✅ Show edit/delete ONLY for job owner */}
               {isOwner && (
                 <div className="bg-white p-6 rounded-lg shadow-md mt-6">
@@ -204,21 +231,6 @@ const JobPage = ({ deleteJob }) => {
                   >
                     Delete Job
                   </button>
-                </div>
-              )}
-
-              {/* Show apply button for Adzuna jobs */}
-              {job.source === "adzuna" && job.applyLink && (
-                <div className="bg-white p-6 rounded-lg shadow-md mt-6">
-                  <h3 className="text-xl font-bold mb-6">Apply</h3>
-                  <a
-                    href={job.applyLink}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="bg-green-600 hover:bg-green-700 text-white text-center font-bold py-2 px-4 rounded-full w-full block"
-                  >
-                    Apply on Company Website
-                  </a>
                 </div>
               )}
             </aside>

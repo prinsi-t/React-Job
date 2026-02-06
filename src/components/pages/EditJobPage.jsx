@@ -16,6 +16,7 @@ const EditJobPage = ({ updateJobSubmit }) => {
     const [description, setDescription] = useState('');
     const [salary, setSalary] = useState('');
     const [jobLocation, setJobLocation] = useState('');
+    const [applyLink, setApplyLink] = useState(''); // ✅ NEW
     const [companyName, setCompanyName] = useState('');
     const [companyDescription, setCompanyDescription] = useState('');
     const [contactEmail, setContactEmail] = useState('');
@@ -30,7 +31,6 @@ const EditJobPage = ({ updateJobSubmit }) => {
       const fetchJob = async () => {
         let job = passedJob;
         
-        // If job wasn't passed via state, fetch it
         if (!job) {
           try {
             const res = await fetch(`${API_URL}/api/jobs/${id}`);
@@ -44,7 +44,6 @@ const EditJobPage = ({ updateJobSubmit }) => {
           }
         }
 
-        // Set form values
         if (job) {
           setTitle(job.title || '');
           setType(job.type || 'Full-Time');
@@ -53,6 +52,7 @@ const EditJobPage = ({ updateJobSubmit }) => {
           setDescription(job.description || '');
           setSalary(job.salary || 'Under $50K');
           setJobLocation(job.location || '');
+          setApplyLink(job.applyLink || ''); // ✅ NEW
           setCompanyName(job.company?.name || '');
           setCompanyDescription(job.company?.description || '');
           setContactEmail(job.company?.contactEmail || '');
@@ -76,6 +76,7 @@ const EditJobPage = ({ updateJobSubmit }) => {
         location: jobLocation,
         description,
         salary,
+        applyLink, // ✅ Include apply link
         company: {
           name: companyName,
           description: companyDescription,
@@ -84,7 +85,6 @@ const EditJobPage = ({ updateJobSubmit }) => {
         }
       };
 
-      // PUT to backend
       await fetch(`${API_URL}/api/jobs/${id}`, {
         method: 'PUT',
         headers: {
@@ -268,6 +268,23 @@ const EditJobPage = ({ updateJobSubmit }) => {
                   value={jobLocation}
                   onChange={(e) => setJobLocation(e.target.value)}
                 />
+              </div>
+
+              {/* ✅ NEW: Application Link */}
+              <div className='mb-4'>
+                <label className='block text-gray-700 font-bold mb-2'>
+                  Application Link (Optional)
+                </label>
+                <input
+                  type='url'
+                  id='applyLink'
+                  name='applyLink'
+                  className='border rounded w-full py-2 px-3 mb-2'
+                  placeholder='https://company.com/apply or mailto:jobs@company.com'
+                  value={applyLink}
+                  onChange={(e) => setApplyLink(e.target.value)}
+                />
+                <p className="text-sm text-gray-600">Where should applicants go to apply? Leave blank to use contact email.</p>
               </div>
   
               <h3 className="text-2xl mb-5">Company Info</h3>

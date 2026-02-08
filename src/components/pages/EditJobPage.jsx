@@ -16,7 +16,7 @@ const EditJobPage = ({ updateJobSubmit }) => {
     const [description, setDescription] = useState('');
     const [salary, setSalary] = useState('');
     const [jobLocation, setJobLocation] = useState('');
-    const [applyLink, setApplyLink] = useState(''); // ✅ NEW
+    const [applyLink, setApplyLink] = useState('');
     const [companyName, setCompanyName] = useState('');
     const [companyDescription, setCompanyDescription] = useState('');
     const [contactEmail, setContactEmail] = useState('');
@@ -52,7 +52,7 @@ const EditJobPage = ({ updateJobSubmit }) => {
           setDescription(job.description || '');
           setSalary(job.salary || 'Under $50K');
           setJobLocation(job.location || '');
-          setApplyLink(job.applyLink || ''); // ✅ NEW
+          setApplyLink(job.applyLink || '');
           setCompanyName(job.company?.name || '');
           setCompanyDescription(job.company?.description || '');
           setContactEmail(job.company?.contactEmail || '');
@@ -76,7 +76,7 @@ const EditJobPage = ({ updateJobSubmit }) => {
         location: jobLocation,
         description,
         salary,
-        applyLink, // ✅ Include apply link
+        applyLink,
         company: {
           name: companyName,
           description: companyDescription,
@@ -228,6 +228,7 @@ const EditJobPage = ({ updateJobSubmit }) => {
                 ></textarea>
               </div>
   
+              {/* ✅ Salary dropdown with Not Disclosed option */}
               <div className="mb-4">
                 <label htmlFor="salary" className="block text-gray-700 font-bold mb-2"
                   >Salary
@@ -251,6 +252,7 @@ const EditJobPage = ({ updateJobSubmit }) => {
                   <option value="$150K - 175K">$150K - $175K</option>
                   <option value="$175K - 200K">$175K - $200K</option>
                   <option value="Over $200K">Over $200K</option>
+                  <option value="Not Disclosed">Not Disclosed</option>
                 </select>
               </div>
   
@@ -270,7 +272,6 @@ const EditJobPage = ({ updateJobSubmit }) => {
                 />
               </div>
 
-              {/* ✅ NEW: Application Link */}
               <div className='mb-4'>
                 <label className='block text-gray-700 font-bold mb-2'>
                   Application Link (Optional)
@@ -284,7 +285,6 @@ const EditJobPage = ({ updateJobSubmit }) => {
                   value={applyLink}
                   onChange={(e) => setApplyLink(e.target.value)}
                 />
-                <p className="text-sm text-gray-600">Where should applicants go to apply? Leave blank to use contact email.</p>
               </div>
   
               <h3 className="text-2xl mb-5">Company Info</h3>

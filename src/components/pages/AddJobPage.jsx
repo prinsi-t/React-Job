@@ -16,7 +16,7 @@ const AddJobPage = ({ addJobSubmit}) => {
     const [companyDescription, setCompanyDescription] = useState('');
     const [contactEmail, setContactEmail] = useState('');
     const [contactPhone, setContactPhone] = useState('');
-    const [applyLink, setApplyLink] = useState(''); // ✅ NEW: Application link
+    const [applyLink, setApplyLink] = useState('');
     
     const navigate = useNavigate();
     const { user } = useAuth();
@@ -32,7 +32,7 @@ const AddJobPage = ({ addJobSubmit}) => {
         location,
         description,
         salary,
-        applyLink, // ✅ Include apply link
+        applyLink,
         userEmail: user?.email,
         posted: new Date().toISOString(),
         company : {
@@ -170,6 +170,7 @@ const AddJobPage = ({ addJobSubmit}) => {
                 ></textarea>
               </div>
   
+              {/* ✅ Salary dropdown with Not Disclosed option */}
               <div className="mb-4">
                 <label htmlFor="salary" className="block text-gray-700 font-bold mb-2"
                   >Salary
@@ -193,9 +194,10 @@ const AddJobPage = ({ addJobSubmit}) => {
                   <option value="$150K - 175K">$150K - $175K</option>
                   <option value="$175K - 200K">$175K - $200K</option>
                   <option value="Over $200K">Over $200K</option>
+                  <option value="Not Disclosed">Not Disclosed</option>
                 </select>
               </div>
-  
+
               <div className='mb-4'>
                 <label className='block text-gray-700 font-bold mb-2'>
                   Location
@@ -212,7 +214,6 @@ const AddJobPage = ({ addJobSubmit}) => {
                 />
               </div>
 
-              {/* ✅ NEW: Application Link */}
               <div className='mb-4'>
                 <label className='block text-gray-700 font-bold mb-2'>
                   Application Link (Optional)
@@ -226,7 +227,6 @@ const AddJobPage = ({ addJobSubmit}) => {
                   value={applyLink}
                   onChange={(e) => setApplyLink(e.target.value)}
                 />
-                <p className="text-sm text-gray-600">Where should applicants go to apply? Leave blank to use contact email.</p>
               </div>
   
               <h3 className="text-2xl mb-5">Company Info</h3>

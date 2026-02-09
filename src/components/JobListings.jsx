@@ -77,7 +77,7 @@ const JobListings = ({ isHome = false }) => {
         category: job.category?.label || "General",
         posted: job.created,
         location: job.location?.display_name || "Remote",
-        description: job.description,
+        description: job.__description__ || job.description, // ✅ FIXED: Use full description
         salary:
           job.salary_min && job.salary_max
             ? `${job.salary_min} - ${job.salary_max}`

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { FaArrowLeft, FaMapMarker } from 'react-icons/fa'
+import { FaArrowLeft, FaMapMarker, FaExternalLinkAlt } from 'react-icons/fa'
 import { toast } from 'react-toastify'
 import { useLocation } from "react-router-dom";
 import { useAuth } from '../../context/AuthContext';
@@ -17,12 +17,23 @@ const JobPage = ({ deleteJob }) => {
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Helper function to strip HTML tags and decode entities
+  const stripHTML = (html) => {
+    if (!html) return '';
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
+  };
+
   useEffect(() => {
     const fetchJob = async () => {
       try {
         if (id.startsWith("adzuna_") && passedJob) {
+          const cleanDescription = stripHTML(passedJob.description);
+          
           setJob({
             ...passedJob,
+            description: cleanDescription,
             source: "adzuna"
           });
           setLoading(false);
@@ -87,7 +98,6 @@ const JobPage = ({ deleteJob }) => {
                   job.userEmail && 
                   job.userEmail === user?.email;
 
-  // ✅ Determine apply link (custom link, contact email, or Adzuna link)
   const getApplyLink = () => {
     if (job.source === "adzuna" && job.applyLink) {
       return job.applyLink;
@@ -104,6 +114,7 @@ const JobPage = ({ deleteJob }) => {
   };
 
   const applyLink = getApplyLink();
+  const description = job?.description || 'No description available';
 
   return (
     <>
@@ -135,11 +146,26 @@ const JobPage = ({ deleteJob }) => {
                   Job Description
                 </h3>
 
-                <p className="mb-4">{job?.description}</p>
+                {/* ✅ Show FULL description without truncating */}
+                <div className="mb-4 whitespace-pre-wrap leading-relaxed text-gray-700">
+                  {description}
+                </div>
 
-                <h3 className="text-indigo-800 text-lg font-bold mb-2">Salary</h3>
+                {/* ✅ For Adzuna jobs, add notice that full details are on company website */}
+                {job.source === "adzuna" && applyLink && (
+                  <div className="mt-4 p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
+                    <p className="text-sm text-blue-800 flex items-center gap-2">
+                      <FaExternalLinkAlt className="text-blue-600" />
+                      <span>
+                        <strong>Full job details available on company website.</strong> Click "Apply on Company Website" below to view complete description and requirements.
+                      </span>
+                    </p>
+                  </div>
+                )}
 
-                <p className="mb-4">{job?.salary} / Year</p>
+                <h3 className="text-indigo-800 text-lg font-bold mb-2 mt-6">Salary</h3>
+
+                <p className="mb-4">{job?.salary || 'Not disclosed'} {job?.salary && job.salary !== 'Not disclosed' && '/ Year'}</p>
               </div>
             </main>
 
@@ -148,23 +174,25 @@ const JobPage = ({ deleteJob }) => {
                 <h3 className="text-xl font-bold mb-6">Company Info</h3>
 
                 <h2 className="text-2xl">
-                  {job?.company?.name}
+                  {job?.company?.name || 'Company name not available'}
                 </h2>
 
-                <p className="my-2">
-                  {job?.company?.description}
-                </p>
+                {job?.company?.description && (
+                  <p className="my-2 whitespace-pre-wrap">
+                    {job.company.description}
+                  </p>
+                )}
 
                 <hr className="my-4" />
 
                 <h3 className="text-xl">Contact Email:</h3>
                 <p className="my-2 bg-indigo-100 p-2 font-bold">
-                  {job?.company?.contactEmail}
+                  {job?.company?.contactEmail || 'Not available'}
                 </p>
 
                 <h3 className="text-xl">Contact Phone:</h3>
                 <p className="my-2 bg-indigo-100 p-2 font-bold">
-                  {job?.company?.contactPhone}
+                  {job?.company?.contactPhone || 'Not available'}
                 </p>
 
                 {(job.category || job.contractType || job.type || job.posted) && (
@@ -197,22 +225,29 @@ const JobPage = ({ deleteJob }) => {
                 )}
               </div>
 
-              {/* ✅ Show Apply button for ALL jobs (DB and Adzuna) */}
               {applyLink && !isOwner && (
                 <div className="bg-white p-6 rounded-lg shadow-md mt-6">
-                  <h3 className="text-xl font-bold mb-6">Apply for this Job</h3>
+                  <h3 className="text-xl font-bold mb-6">
+                    {job.source === "adzuna" ? "View Full Job & Apply" : "Apply for this Job"}
+                  </h3>
                   <a
                     href={applyLink}
                     target="_blank"
                     rel="noreferrer"
-                    className="bg-green-600 hover:bg-green-700 text-white text-center font-bold py-2 px-4 rounded-full w-full block"
+                    className="bg-green-600 hover:bg-green-700 text-white text-center font-bold py-3 px-4 rounded-full w-full block flex items-center justify-center gap-2"
                   >
-                    {applyLink.startsWith('mailto:') ? 'Apply via Email' : 'Apply on Company Website'}
+                    {applyLink.startsWith('mailto:') ? (
+                      'Apply via Email'
+                    ) : (
+                      <>
+                        <FaExternalLinkAlt />
+                        {job.source === "adzuna" ? "View Full Job & Apply" : "Apply on Company Website"}
+                      </>
+                    )}
                   </a>
                 </div>
               )}
 
-              {/* ✅ Show edit/delete ONLY for job owner */}
               {isOwner && (
                 <div className="bg-white p-6 rounded-lg shadow-md mt-6">
                   <h3 className="text-xl font-bold mb-6">Manage Job</h3>

@@ -29,7 +29,7 @@ const JobSchema = new mongoose.Schema({
   location: String,
   description: String,
   salary: String,
-  applyLink: String,    // ✅ NEW: Application link
+  applyLink: String,
   userEmail: String,
   posted: String,
   company: {
@@ -99,10 +99,9 @@ app.get("/api/live-jobs", async (req, res) => {
     const state = req.query.state || "";
     const cacheKey = `${country}-${page}`;
 
-if (adzunaCache[cacheKey]) {
-  return res.json(adzunaCache[cacheKey]);
-}
-
+    if (adzunaCache[cacheKey]) {
+      return res.json(adzunaCache[cacheKey]);
+    }
 
     const locationQuery = [city, state].filter(Boolean).join(" ");
 
@@ -119,8 +118,15 @@ if (adzunaCache[cacheKey]) {
       }
     );
 
-        adzunaCache[cacheKey] = data.results;
-        res.json(data.results);
+    // ✅ DEBUG: Log what fields Adzuna returns
+    if (data.results && data.results.length > 0) {
+      console.log("🔍 Adzuna job fields:", Object.keys(data.results[0]));
+      console.log("📝 Description field:", data.results[0].description?.substring(0, 100));
+      console.log("📝 __description__ field:", data.results[0].__description__?.substring(0, 100));
+    }
+
+    adzunaCache[cacheKey] = data.results;
+    res.json(data.results);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Adzuna fetch failed" });

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { FaHome } from "react-icons/fa";
@@ -5,17 +6,53 @@ import { FaHome } from "react-icons/fa";
 const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
+  const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
+
+  // ✅ Validate email - must have @ OR .com
+  const validateEmail = (email) => {
+    if (!email) return "Email is required";
+    
+    const hasAt = email.includes("@");
+    const hasDotCom = email.includes(".com");
+    
+    if (!hasAt && !hasDotCom) {
+      return "Email must contain @ or .com";
+    }
+    
+    return "";
+  };
+
+  const handleEmailChange = (e) => {
+    const newEmail = e.target.value;
+    setEmail(newEmail);
+    if (emailError) {
+      setEmailError("");
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    const emailValidationError = validateEmail(email);
+
+    if (emailValidationError) {
+      setEmailError(emailValidationError);
+      return;
+    }
+
+    setEmailError("");
+
     const user = {
-      email: e.target.email.value,
+      email: email,
     };
 
     login(user);
     navigate("/", { replace: true });
   };
+
+  // ✅ Check if email is valid
+  const isEmailValid = email && validateEmail(email) === "";
 
   return (
     <div className="min-h-screen bg-indigo-50">
@@ -40,13 +77,21 @@ const Login = () => {
         >
           <h2 className="text-2xl font-bold mb-4">Login</h2>
 
-          <input
-            name="email"
-            type="email"
-            placeholder="Email"
-            className="w-full border p-2 rounded mb-3"
-            required
-          />
+          {/* ✅ Email with custom validation */}
+          <div className="mb-3">
+            <input
+              name="email"
+              type="text"
+              placeholder="Email"
+              className="w-full border p-2 rounded"
+              value={email}
+              onChange={handleEmailChange}
+              required
+            />
+            {emailError && (
+              <p className="text-red-500 text-sm mt-1">{emailError}</p>
+            )}
+          </div>
 
           <input
             name="password"
@@ -56,7 +101,11 @@ const Login = () => {
             required
           />
 
-          <button className="w-full bg-indigo-500 text-white py-2 rounded hover:bg-indigo-600">
+          {/* ✅ FIXED: Button only disabled if email is INVALID */}
+          <button 
+            className="w-full bg-indigo-500 text-white py-2 rounded hover:bg-indigo-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+            disabled={!isEmailValid}
+          >
             Login
           </button>
 

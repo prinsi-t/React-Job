@@ -9,6 +9,8 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
 
   const calculatePasswordStrength = (password) => {
     let strength = 0;
@@ -55,6 +57,20 @@ const Register = () => {
     return "";
   };
 
+  // ✅ Validate email - must have @ OR .com
+  const validateEmail = (email) => {
+    if (!email) return "Email is required";
+    
+    const hasAt = email.includes("@");
+    const hasDotCom = email.includes(".com");
+    
+    if (!hasAt && !hasDotCom) {
+      return "Email must contain @ or .com";
+    }
+    
+    return "";
+  };
+
   const handlePasswordChange = (e) => {
     const newPassword = e.target.value;
     setPassword(newPassword);
@@ -63,22 +79,37 @@ const Register = () => {
     }
   };
 
+  const handleEmailChange = (e) => {
+    const newEmail = e.target.value;
+    setEmail(newEmail);
+    if (emailError) {
+      setEmailError("");
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const error = validatePassword(password);
+    const emailValidationError = validateEmail(email);
+    const passwordValidationError = validatePassword(password);
 
-    if (error) {
-      setPasswordError(error);
+    if (emailValidationError) {
+      setEmailError(emailValidationError);
       return;
     }
 
+    if (passwordValidationError) {
+      setPasswordError(passwordValidationError);
+      return;
+    }
+
+    setEmailError("");
     setPasswordError("");
 
     const user = {
       id: Date.now(),
       name: e.target.name.value,
-      email: e.target.email.value,
+      email: email,
     };
 
     login(user);
@@ -87,6 +118,10 @@ const Register = () => {
 
   const strength = calculatePasswordStrength(password);
   const strengthInfo = getStrengthInfo(strength);
+
+  // ✅ Check if form is valid
+  const isEmailValid = email && validateEmail(email) === "";
+  const isPasswordValid = password && validatePassword(password) === "";
 
   return (
     <div className="min-h-screen bg-indigo-50">
@@ -118,13 +153,21 @@ const Register = () => {
             required
           />
 
-          <input
-            name="email"
-            type="email"
-            placeholder="Email"
-            className="w-full border p-2 rounded mb-3"
-            required
-          />
+          {/* ✅ Email with custom validation */}
+          <div className="mb-3">
+            <input
+              name="email"
+              type="text"
+              placeholder="Email"
+              className="w-full border p-2 rounded"
+              value={email}
+              onChange={handleEmailChange}
+              required
+            />
+            {emailError && (
+              <p className="text-red-500 text-sm mt-1">{emailError}</p>
+            )}
+          </div>
 
           <div className="mb-4">
             <div className="relative">
@@ -185,9 +228,10 @@ const Register = () => {
             </p>
           </div>
 
+          {/* ✅ FIXED: Button only disabled if email OR password is INVALID */}
           <button 
             className="w-full bg-indigo-500 text-white py-2 rounded hover:bg-indigo-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
-            disabled={!password || validatePassword(password) !== ""}
+            disabled={!isEmailValid || !isPasswordValid}
           >
             Register
           </button>

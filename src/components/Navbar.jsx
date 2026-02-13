@@ -16,10 +16,12 @@ const Navbar = () => {
   return (
     <nav className="bg-indigo-600 p-4">
       <div className="container mx-auto flex justify-between items-center">
+        <div className="flex items-center gap-2">
+        <img src="/src/assets/images/logo.png" alt="logo" className="w-10 h-10" />
         <Link to="/" className="text-white text-xl font-bold">
-          React Jobs
+          ReactJobs.com
         </Link>
-
+        </div>
         <div className="space-x-4">
           {!user ? (
             <>

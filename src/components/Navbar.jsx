@@ -12,52 +12,81 @@ const Navbar = () => {
     navigate("/login");
   };
 
-  const linkClass = ({ isActive }) => isActive ? 'bg-black text-white rounded-md px-3 py-2 hover:bg-gray-900' : 'text-white hover:bg-gray-900 hover:text-white rounded-md px-3 py-2'
+  const linkClass = ({ isActive }) => 
+    isActive 
+      ? 'bg-blue-700 text-white rounded-md px-4 py-2 transition-all duration-300' 
+      : 'text-gray-300 hover:text-white hover:bg-white/10 rounded-md px-4 py-2 transition-all duration-300';
+
   return (
-    <nav className="bg-indigo-600 p-4">
-      <div className="container mx-auto flex justify-between items-center">
-        <div className="flex items-center gap-2">
-        <img src="/src/assets/images/logo.png" alt="logo" className="w-10 h-10" />
-        <Link to="/" className="text-white text-xl font-bold">
-          ReactJobs.com
-        </Link>
-        </div>
-        <div className="space-x-4">
-          {!user ? (
-            <>
-              <Link to="/login" className="text-white hover:underline">
-                Login
-              </Link>
+    <nav className="bg-gradient-to-r from-slate-950 via-blue-950 to-slate-950 border-b border-white/10 backdrop-blur-sm sticky top-0 z-50 animate-fadeIn shadow-lg">
+      <div className="container mx-auto px-6">
+        <div className="flex justify-between items-center h-20">
+          
+          {/* Logo Section */}
+          <Link 
+            to="/" 
+            className="flex items-center space-x-3 hover:scale-105 transition-transform duration-300"
+          >
+            <img 
+              src="/src/assets/images/logo.png" 
+              alt="logo" 
+              className="w-10 h-10 object-contain animate-glow" 
+            />
+            <span className="text-white text-2xl font-bold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
+              ReactJobs.com
+            </span>
+          </Link>
 
-              <Link
-                to="/register"
-                className="bg-white text-indigo-600 px-3 py-1 rounded"
-              >
-                Register
-              </Link>
-            </>
-          ) : (
-            <>
-              <Link to="/jobs" className="text-white hover:underline">
-                Jobs
-              </Link>
+          {/* Navigation Links */}
+          <div className="flex items-center space-x-2">
+            {!user ? (
+              // Not Logged In
+              <div className="flex items-center space-x-2">
+                <Link 
+                  to="/login" 
+                  className="text-gray-300 hover:text-white hover:bg-white/10 rounded-md px-4 py-2 transition-all duration-300"
+                >
+                  Login
+                </Link>
 
-              <Link to="/add-job" className="text-white hover:underline">
-                Add Job
-              </Link>
+                <Link
+                  to="/register"
+                  className="btn-modern bg-gradient-to-r from-blue-700 to-blue-600 text-white px-6 py-2 rounded-md hover-lift shadow-lg font-semibold transition-all duration-300"
+                >
+                  Register
+                </Link>
+              </div>
+            ) : (
+              // Logged In
+              <div className="flex items-center space-x-2">
+                <NavLink to="/jobs" className={linkClass}>
+                  Jobs
+                </NavLink>
 
-              <button
-                onClick={handleLogout}
-                className="bg-red-500 text-white px-3 py-1 rounded"
-              >
-                Logout
-              </button>
-            </>
-          )}
+                <NavLink to="/add-job" className={linkClass}>
+                  Add Job
+                </NavLink>
+
+                {/* User Info & Logout */}
+                <div className="flex items-center space-x-4 ml-4 pl-4 border-l border-white/10">
+                  <span className="text-gray-300 text-sm hidden md:block">
+                    {user.email}
+                  </span>
+
+                  <button
+                    onClick={handleLogout}
+                    className="btn-modern bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md transition-all duration-300 hover-lift font-semibold"
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </nav>
   );
 };
 
-export default Navbar
+export default Navbar;

@@ -18,30 +18,30 @@ const JobListing = ({job}) => {
   
   
     return (
-       <div key={job._id} className="rounded-xl shadow-md relative bg-white p-6">
+       <div key={job._id} className="rounded-xl shadow-md relative bg-gradient-to-br from-slate-950 via-blue-950 to-slate-9500 p-6">
                       <div>
-                        <div className="text-sm text-gray-600 my-2">{job?.type}</div>
-                        <h3 className="font-bold">{job?.title}</h3>
+                        <div className="text-sm text-white my-2">{job?.type}</div>
+                        <h3 className="font-bold text-white">{job?.title}</h3>
                       </div> 
                       <div className="mt-3">
-                        {description}
+                        <p className="text-white">{description}</p>
                       </div>
 
-                      <button onClick={() => setShowFullDescription((prevState) => !prevState)} className="text-indigo-500 mb-5 hover:text-indigo-600">
-                        {showFullDescription ? 'Less' : 'More'}
+                      <button onClick={() => setShowFullDescription((prevState) => !prevState)} className=" mb-5 hover:bg-gray-800 text-white">
+                        {showFullDescription ? 'Less...' : 'More...'}
                       </button>
 
-                      <h3 className="text-indigo-500 mb-2 mt-4">{job?.salary}</h3>
-                      <div className="border-t border-gray-100 mb-5 mt-2"></div>
+                      <h3 className="text-white mb-2 mt-4">{job?.salary}</h3>
+                      <div className="border-t border-gray-500 mb-5 mt-2"></div>
                       <div className="flex lg:flex-row justify-between mb-4 items-center">
-                        <div className="text-red-700 mb-3 flex items-center">
-                          <FaMapMarker className="text-lg mb-1 mr-2" />
+                        <div className="text-white mb-3 flex items-center">
+                          <FaMapMarker className="text-lg text-red-500  mb-1 mr-2" />
                           {job?.location}
                         </div>
                         <Link to={`/jobs/${job._id || `adzuna_${job.id}`}`} 
                         state={{job, search: window.location.search }}
                             onClick={() => window.scrollTo(0, 0)} 
-                            className="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg text-center text-sm">
+                            className="bg-blue-700 hover:bg-blue-900 text-white px-4 py-2 rounded-lg text-center text-sm">
                         View Details
                       </Link>
                       </div>

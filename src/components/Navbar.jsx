@@ -14,7 +14,7 @@ const Navbar = () => {
 
   const linkClass = ({ isActive }) => 
     isActive 
-      ? 'bg-blue-700 text-white rounded-md px-4 py-2 transition-all duration-300' 
+      ? 'bg-blue-700 hover:bg-blue-900 text-white rounded-md px-4 py-2 transition-all duration-300' 
       : 'text-gray-300 hover:text-white hover:bg-white/10 rounded-md px-4 py-2 transition-all duration-300';
 
   return (
@@ -69,13 +69,11 @@ const Navbar = () => {
 
                 {/* User Info & Logout */}
                 <div className="flex items-center space-x-4 ml-4 pl-4 border-l border-white/10">
-                  <span className="text-gray-300 text-sm hidden md:block">
-                    {user.email}
-                  </span>
+                  
 
                   <button
                     onClick={handleLogout}
-                    className="btn-modern bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md transition-all duration-300 hover-lift font-semibold"
+                    className="btn-modern cursor-pointer bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md transition-all duration-300 hover-lift font-semibold"
                   >
                     Logout
                   </button>

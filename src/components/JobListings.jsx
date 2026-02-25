@@ -127,17 +127,18 @@ const JobListings = ({ isHome = false }) => {
   
 
   return (
-    <>
+   
+    <div className="bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950">
     {!isHome && (
       <section>
-        <div className="container m-auto py-6 px-6">
-          <Link to="/" className="text-indigo-500 hover:text-indigo-600 flex items-center">
+        <div className="  m-auto py-6 px-6">
+          <Link to="/" className="text-white hover:text-blue-300 flex items-center ml-28">
             <FaArrowLeft className="mr-2" /> Back to Home
           </Link>
         </div>
       </section>
     )}
-    <section className="bg-indigo-50 px-4 py-10">
+    <section className=" px-4 py-10">
       <div className="container-xl lg:container m-auto">
         {!isHome && (
           <div className="flex justify-center gap-4 mb-6">
@@ -153,7 +154,7 @@ const JobListings = ({ isHome = false }) => {
                 setHasMore(true);
               }}
               
-              className="border px-4 py-2 rounded-lg"
+              className="border px-4 py-2 rounded-lg text-white bg-gray-800 hover:bg-gray-700"
             >
                <option value="recent">Recent Jobs</option>
               <option value="in">India</option>
@@ -182,7 +183,7 @@ const JobListings = ({ isHome = false }) => {
             <button
               type="button"
               onClick={() => setPage((prev) => prev + 1)}
-              className="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-2 rounded-lg"
+              className="bg-blue-700 hover:bg-blue-900 text-white px-6 py-2 rounded-lg"
             >
               Load More Jobs
             </button>
@@ -190,7 +191,7 @@ const JobListings = ({ isHome = false }) => {
         )}
       </div>
     </section>
-    </>
+    </div>
   );
 };
 

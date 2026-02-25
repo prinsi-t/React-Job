@@ -126,7 +126,7 @@ const JobPage = ({ deleteJob }) => {
       {/* Back Button */}
       <section className="relative z-10">
         <div className="container mx-auto py-6 px-6">
-          <Link to={`/jobs${backSearch}`} className="text-blue-400 hover:text-blue-300 flex items-center transition-colors duration-300">
+          <Link to={`/jobs${backSearch}`} className="text-white hover:text-blue-300 flex items-center transition-colors duration-300">
             <FaArrowLeft className="mr-2" /> Back to Job Listings
           </Link>
         </div>
@@ -140,13 +140,13 @@ const JobPage = ({ deleteJob }) => {
             {/* Main Content */}
             <main>
               <div className="modern-card animate-fadeInUp">
-                <h1 className="text-4xl font-bold mb-4 text-white">
+                <h1 className="text-4xl font-bold mb-4 text-blue-400">
                   {job?.title}
                 </h1>
 
                 <div className="text-gray-400 mb-4 flex items-center">
-                  <FaMapMarker className="text-lg text-blue-400 mr-2" />
-                  <p className="text-blue-400">{job?.location}</p>
+                  <FaMapMarker className="text-lg text-red-500 mr-2" />
+                  <p className="text-white">{job?.location}</p>
                 </div>
               </div>
 
@@ -155,7 +155,7 @@ const JobPage = ({ deleteJob }) => {
                   Job Description
                 </h3>
 
-                <div className="mb-4 whitespace-pre-wrap leading-relaxed text-gray-300">
+                <div className="mb-4 whitespace-pre-wrap leading-relaxed text-white">
                   {description}
                 </div>
 
@@ -171,14 +171,14 @@ const JobPage = ({ deleteJob }) => {
                 )}
 
                 <h3 className="text-blue-400 text-xl font-bold mb-2 mt-6">Salary</h3>
-                <p className="mb-4 text-gray-300">{job?.salary || 'Not disclosed'} {job?.salary && job.salary !== 'Not disclosed' && '/ Year'}</p>
+                <p className="mb-4 text-white">{job?.salary || 'Not disclosed'} {job?.salary && job.salary !== 'Not disclosed' && '/ Year'}</p>
               </div>
             </main>
 
             {/* Sidebar */}
             <aside>
               <div className="modern-card animate-fadeInUp animation-delay-400">
-                <h3 className="text-xl font-bold mb-6 text-white">Company Info</h3>
+                <h3 className="text-xl font-bold mb-6 text-blue-400">Company Info</h3>
 
                 <h2 className="text-2xl text-white mb-2">
                   {job?.company?.name || 'Company name not available'}
@@ -192,12 +192,12 @@ const JobPage = ({ deleteJob }) => {
 
                 <hr className="my-4 border-white/10" />
 
-                <h3 className="text-lg text-white">Contact Email:</h3>
+                <h3 className="text-lg text-blue-400">Contact Email:</h3>
                 <p className="my-2 bg-white/5 p-2 font-bold text-gray-300 rounded">
                   {job?.company?.contactEmail || 'Not available'}
                 </p>
 
-                <h3 className="text-lg text-white">Contact Phone:</h3>
+                <h3 className="text-lg text-blue-400">Contact Phone:</h3>
                 <p className="my-2 bg-white/5 p-2 font-bold text-gray-300 rounded">
                   {job?.company?.contactPhone || 'Not available'}
                 </p>
@@ -206,14 +206,14 @@ const JobPage = ({ deleteJob }) => {
                   <div className="mt-4 space-y-2">
                     {job.category && (
                       <>
-                        <h3 className="text-lg text-white">Category:</h3>
+                        <h3 className="text-lg text-blue-400">Category:</h3>
                         <p className="bg-white/5 p-2 text-gray-300 rounded">{job.category}</p>
                       </>
                     )}
 
                     {(job.contractType || job.type) && (
                       <>
-                        <h3 className="text-lg text-white">Contract:</h3>
+                        <h3 className="text-lg text-blue-400">Contract:</h3>
                         <p className="bg-white/5 p-2 text-gray-300 rounded">
                           {job.contractType || "Permanent"} • {job.type || "Full-Time"}
                         </p>
@@ -222,7 +222,7 @@ const JobPage = ({ deleteJob }) => {
 
                     {job.posted && (
                       <>
-                        <h3 className="text-lg text-white">Posted:</h3>
+                        <h3 className="text-lg text-blue-400">Posted:</h3>
                         <p className="bg-white/5 p-2 text-gray-300 rounded">
                           {new Date(job.posted).toDateString()}
                         </p>
@@ -241,7 +241,7 @@ const JobPage = ({ deleteJob }) => {
                     href={applyLink}
                     target="_blank"
                     rel="noreferrer"
-                    className="btn-modern bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-white text-center font-bold py-3 px-4 rounded-lg w-full block flex items-center justify-center gap-2 hover-lift"
+                    className="btn-modern bg-gradient-to-r from-green-600 to-green-500 hover:from-green-600 hover:to-green-700 text-white text-center font-bold py-3 px-4 rounded-lg w-full block flex items-center justify-center gap-2 hover-lift"
                   >
                     {applyLink.startsWith('mailto:') ? (
                       'Apply via Email'

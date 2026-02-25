@@ -28,7 +28,7 @@ const Navbar = () => {
             className="flex items-center space-x-3 hover:scale-105 transition-transform duration-300"
           >
             <img 
-              src="/src/assets/images/logo.png" 
+              src="/logo.png" 
               alt="logo" 
               className="w-10 h-10 object-contain animate-glow" 
             />

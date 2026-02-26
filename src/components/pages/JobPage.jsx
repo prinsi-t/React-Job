@@ -262,14 +262,14 @@ const JobPage = ({ deleteJob }) => {
                   <Link
                     to={`/edit-job/${job?._id}`}
                     state={{ job }}
-                    className="btn-modern bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white text-center font-bold py-3 px-4 rounded-lg w-full block mb-4 hover-lift"
+                    className="btn-modern bg-gradient-to-r from-blue-700 to-blue-800 hover:from-blue-800 hover:to-blue-900 text-white text-center font-bold py-3 px-4 rounded-lg w-full block mb-4 hover-lift"
                   >
                     Edit Job
                   </Link>
 
                   <button
                     onClick={() => onDeleteClick(job)}
-                    className="btn-modern bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white text-center font-bold py-3 px-4 rounded-lg w-full focus:outline-none hover-lift"
+                    className="btn-modern cursor-pointer bg-gradient-to-r from-red-500 to-red-600 hover:from-red-700 hover:to-red-800 text-white text-center font-bold py-3 px-4 rounded-lg w-full focus:outline-none hover-lift"
                   >
                     Delete Job
                   </button>

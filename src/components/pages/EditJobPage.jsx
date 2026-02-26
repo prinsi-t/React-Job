@@ -252,7 +252,7 @@ const EditJobPage = ({ updateJobSubmit }) => {
   
                 {/* Submit Button */}
                 <div className="mt-8">
-                  <button className="btn-modern bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-600 hover:to-blue-500 text-white font-bold py-4 px-8 rounded-lg w-full focus:outline-none hover-lift shadow-2xl transition-all duration-300" type="submit">
+                  <button className="btn-modern cursor-pointer bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-800 hover:to-blue-900 text-white font-bold py-4 px-8 rounded-lg w-full focus:outline-none hover-lift shadow-2xl transition-all duration-300" type="submit">
                     Update Job
                   </button>
                 </div>

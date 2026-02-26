@@ -139,9 +139,9 @@ const JobListings = ({ isHome = false }) => {
       </section>
     )}
     <section className=" px-4 py-10">
-      <div className="container-xl lg:container m-auto">
+      <div className="container-xl lg:container m-auto ">
         {!isHome && (
-          <div className="flex justify-center gap-4 mb-6">
+          <div className="flex justify-center gap-4 mb-6 ">
             <select
               value={country}
               onChange={(e) => {
@@ -154,14 +154,17 @@ const JobListings = ({ isHome = false }) => {
                 setHasMore(true);
               }}
               
-              className="border px-4 py-2 rounded-lg text-white bg-gray-800 hover:bg-gray-700"
+              className="border px-4 py-2 rounded-lg text-white bg-gray-800 cursor-pointer"
             >
+              
                <option value="recent">Recent Jobs</option>
               <option value="in">India</option>
               <option value="us">USA</option>
               <option value="gb">UK</option>
               <option value="ca">Canada</option>
               <option value="au">Australia</option>
+              
+
             </select>
           </div>
         )}

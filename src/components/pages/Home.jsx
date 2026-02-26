@@ -19,7 +19,7 @@ const Home = () => {
         {/* Main Card */}
         <div className="modern-card max-w-md w-full text-center hover-lift animate-fadeInUp">
 
-          <h1 className="text-4xl md:text-5xl font-black mb-4">
+          <h1 className="text-4xl md:text-5xl font-black mb-4 hover:scale-105 transition-transform duration-300 ">
             <span className="bg-gradient-to-r from-blue-500 to-blue-600 bg-clip-text text-transparent">
               Welcome to
             </span>
@@ -36,14 +36,14 @@ const Home = () => {
           <div className="space-y-4">
             <Link
               to="/login"
-              className="btn-modern bg-gradient-to-r from-blue-700 to-blue-600 text-white py-3 rounded-lg font-semibold hover-lift w-full block shadow-2xl"
+              className="btn-modern bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-800 hover:to-blue-900 text-white py-3 rounded-lg font-semibold hover-lift w-full block shadow-2xl"
             >
               Login
             </Link>
 
             <Link
               to="/register"
-              className="btn-modern glass text-white py-3 rounded-lg font-semibold hover-lift w-full block"
+              className="btn-modern glass bg-gradient-to-r hover:from-gray-800/40 hover:to-gray-900/40 text-white py-3 rounded-lg font-semibold hover-lift w-full block"
             >
               Register
             </Link>

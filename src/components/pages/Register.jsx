@@ -201,7 +201,7 @@ const Register = () => {
 
             {/* Submit Button */}
             <button 
-              className="btn-modern w-full bg-gradient-to-r from-blue-700 to-blue-600 text-white py-3 rounded-lg font-semibold hover-lift disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+              className="btn-modern w-full cursor-pointer bg-gradient-to-r from-blue-700 to-blue-600 text-white py-3 rounded-lg font-semibold hover-lift disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
               disabled={!isEmailValid || !isPasswordValid}
             >
               Register

@@ -8,6 +8,8 @@ const Login = () => {
   const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [password, setPassword] = useState("");
+const [passwordError, setPasswordError] = useState("");
   const currentYear = new Date().getFullYear();
 
   const validateEmail = (email) => {
@@ -23,6 +25,12 @@ const Login = () => {
     return "";
   };
 
+  const validatePassword = (password) => {
+    if (!password) return "Password is required";
+    if (password.length < 6) return "Password must be at least 6 characters";
+    return "";
+  };
+
   const handleEmailChange = (e) => {
     const newEmail = e.target.value;
     setEmail(newEmail);
@@ -33,20 +41,28 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+  
     const emailValidationError = validateEmail(email);
-
+    const passwordValidationError = validatePassword(password);
+  
     if (emailValidationError) {
       setEmailError(emailValidationError);
       return;
     }
-
+  
+    if (passwordValidationError) {
+      setPasswordError(passwordValidationError);
+      return;
+    }
+  
     setEmailError("");
-
+    setPasswordError("");
+  
     const user = {
-      email: email,
+      email,
+      password,
     };
-
+  
     login(user);
     navigate("/", { replace: true });
   };
@@ -56,6 +72,8 @@ const Login = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950 flex flex-col relative overflow-hidden">
       
+      
+
       {/* Floating Background Elements */}
       <div className="absolute inset-0 pointer-events-none z-0">
         <div className="absolute top-20 left-10 w-96 h-96 bg-blue-900/20 rounded-full blur-3xl animate-float"></div>
@@ -89,13 +107,23 @@ const Login = () => {
               name="password"
               type="password"
               placeholder="Password"
+              value={password}
+  onChange={(e) => {
+    setPassword(e.target.value);
+    if (passwordError) setPasswordError("");
+
+    {passwordError && (
+      <p className="text-red-400 text-sm mt-1">{passwordError}</p>
+    )}
+  }}
+  
               className="w-full bg-white/10 border border-white/20 text-white placeholder-gray-400 p-3 rounded-lg focus:outline-none focus:border-blue-500 transition-all duration-300"
               required
             />
 
             {/* Submit Button */}
             <button 
-              className="btn-modern w-full bg-gradient-to-r from-blue-700 to-blue-600 text-white py-3 rounded-lg font-semibold hover-lift disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+              className="btn-modern cursor-pointer w-full bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-800 hover:to-blue-900 text-white py-3 rounded-lg font-semibold hover-lift disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
               disabled={!isEmailValid}
             >
               Login

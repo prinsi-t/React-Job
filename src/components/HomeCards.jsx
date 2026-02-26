@@ -9,7 +9,7 @@ const HomeCards = () => {
             <Card>
               <h2 className="font-bold">For Developers</h2>
               <p>Browse our React jobs and start your career today</p>
-              <Link to="/jobs" className="block bg-black text-white rounded-lg px-4 py-2 hover:bg-gray-700 mt-3">Browse Jobs</Link>
+              <Link to="/jobs" className="block bg-black text-white rounded-lg px-4 py-2 hover:bg-gray-950 mt-3">Browse Jobs</Link>
             </Card>
             <Card  bg ='bg-indigo-100'>
               <h2 className="font-bold">For Employers</h2>

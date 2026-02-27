@@ -1,7 +1,7 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
-
+import './modern-theme.css'  // ← Add this at the top
 import Home from "./components/pages/Home";
 import HomePage from "./components/pages/HomePage";
 import Login from "./components/pages/Login";

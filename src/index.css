@@ -9,6 +9,11 @@
   font-family: 'Inter', sans-serif;
 }
 
+
+
+html {
+  font-size: 14px;  /* Makes everything ~12% smaller */
+}
 /* ===== ANIMATIONS ===== */
 @keyframes fadeInUp {
   from {

@@ -132,7 +132,7 @@ const JobListings = ({ isHome = false }) => {
     {!isHome && (
       <section>
         <div className="  m-auto py-6 px-6">
-          <Link to="/" className="text-white hover:text-blue-300 flex items-center ml-28">
+          <Link to="/" className="text-white hover:text-blue-300 flex items-center ml-60">
             <FaArrowLeft className="mr-2" /> Back to Home
           </Link>
         </div>

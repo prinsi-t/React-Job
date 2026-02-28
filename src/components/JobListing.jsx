@@ -4,9 +4,6 @@ import { useState } from 'react'
 import { FaMapMarker } from 'react-icons/fa';
 import { useEffect } from 'react'  
 
-
-
-
 const JobListing = ({job}) => {
     const [showFullDescription, setShowFullDescription] = useState(false);
     
@@ -18,40 +15,59 @@ const JobListing = ({job}) => {
   
   
     return (
-       <div key={job._id} className="rounded-xl shadow-md relative bg-gradient-to-br from-slate-950 via-blue-950 to-slate-9500 p-6">
-                      <div>
-                        <div className="text-sm text-white my-2">{job?.type}</div>
-                        <h3 className="font-bold text-white">{job?.title}</h3>
-                      </div> 
-                      <div className="mt-3">
-                        <p className="text-white">{description}</p>
-                      </div>
+       <div key={job._id} className="modern-card hover-lift animate-fadeInUp bg-gradient-to-br from-slate-900/90 via-blue-950/90 to-slate-900/90 backdrop-blur-sm">
+          {/* Job Type Badge */}
+          <div className="mb-3">
+            <span className="inline-block bg-blue-500/20 text-blue-300 text-xs font-semibold px-3 py-1 rounded-full border border-blue-400/30">
+              {job?.type}
+            </span>
+          </div>
 
-                      <button onClick={() => setShowFullDescription((prevState) => !prevState)} className=" mb-5 hover:bg-gray-800 text-white">
-                        {showFullDescription ? 'Less...' : 'More...'}
-                      </button>
+          {/* Job Title */}
+          <h3 className="text-xl font-bold text-white mb-3 hover:text-blue-400 transition-colors duration-300">
+            {job?.title}
+          </h3>
 
-                      <h3 className="text-white mb-2 mt-4">{job?.salary}</h3>
-                      <div className="border-t border-gray-500 mb-5 mt-2"></div>
-                      <div className="flex lg:flex-row justify-between mb-4 items-center">
-                        <div className="text-white mb-3 flex items-center">
-                          <FaMapMarker className="text-lg text-red-500  mb-1 mr-2" />
-                          {job?.location}
-                        </div>
-                        <Link to={`/jobs/${job._id || `adzuna_${job.id}`}`} 
-                        state={{job, search: window.location.search }}
-                            onClick={() => window.scrollTo(0, 0)} 
-                            className="bg-blue-700 hover:bg-blue-900 text-white px-4 py-2 rounded-lg text-center text-sm">
-                        View Details
-                      </Link>
-                      </div>
-                    
+          {/* Description */}
+          <div className="mt-3">
+            <p className="text-gray-300 text-sm leading-relaxed">{description}</p>
+          </div>
 
-                      
-                      
+          {/* More/Less Button */}
+          <button 
+            onClick={() => setShowFullDescription((prevState) => !prevState)} 
+            className="mt-2 mb-4 text-blue-400 hover:text-blue-300 text-sm font-semibold transition-colors duration-300"
+          >
+            {showFullDescription ? 'Show Less ↑' : 'Show More ↓'}
+          </button>
 
+          {/* Salary */}
+          <div className="bg-white/5 rounded-lg px-3 py-2 mb-4">
+            <h3 className="text-green-400 font-semibold">{job?.salary}</h3>
+          </div>
 
-                    </div>
+          {/* Divider */}
+          <div className="border-t border-white/10 my-4"></div>
+
+          {/* Bottom Section */}
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3">
+            {/* Location */}
+            <div className="text-gray-300 flex items-center">
+              <FaMapMarker className="text-red-400 mr-2 flex-shrink-0" />
+              <span className="text-sm">{job?.location}</span>
+            </div>
+
+            {/* View Details Button */}
+            <Link 
+              to={`/jobs/${job._id || `adzuna_${job.id}`}`} 
+              state={{job, search: window.location.search }}
+              onClick={() => window.scrollTo(0, 0)} 
+              className="btn-modern bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover-lift shadow-lg w-full lg:w-auto text-center"
+            >
+              View Details →
+            </Link>
+          </div>
+       </div>
   )
 }
 

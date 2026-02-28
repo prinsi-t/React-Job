@@ -77,7 +77,7 @@ const JobListings = ({ isHome = false }) => {
         category: job.category?.label || "General",
         posted: job.created,
         location: job.location?.display_name || "Remote",
-        description: job.__description__ || job.description, // ✅ FIXED: Use full description
+        description: job.__description__ || job.description,
         salary:
           job.salary_min && job.salary_max
             ? `${job.salary_min} - ${job.salary_max}`
@@ -102,8 +102,6 @@ const JobListings = ({ isHome = false }) => {
   
     setLoading(false);
   };
-  
-  
 
   useEffect(() => {
     setJobs([]);
@@ -124,76 +122,89 @@ const JobListings = ({ isHome = false }) => {
       setCountry(urlCountry);
     }
   }, [searchParams]);
-  
 
   return (
-   
-    <div className="bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950">
-    {!isHome && (
-      <section className="relative z-10">
-        <div className="container mx-auto py-6 px-6">
-          <Link to='/' className="text-white hover:text-blue-300 flex items-center transition-colors duration-300">
-            <FaArrowLeft className="mr-2" /> Back to Home
-          </Link>
+    <div className="bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950  flex flex-col relative overflow-hidden">
+      
+      {/* Floating Background Elements */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute top-20 left-10 w-96 h-96 bg-blue-900/20 rounded-full blur-3xl animate-float"></div>
+        <div className="absolute bottom-20 right-10 w-[500px] h-[500px] bg-blue-800/15 rounded-full blur-3xl animate-float animation-delay-400"></div>
+      </div>
+
+      {/* Back Button */}
+      {!isHome && (
+        <section className="relative z-10">
+          <div className="container mx-auto py-6 px-6">
+            <Link to='/' className="text-blue-400 hover:text-blue-300 flex items-center transition-colors duration-300">
+              <FaArrowLeft className="mr-2" /> Back to Home
+            </Link>
+          </div>
+        </section>
+      )}
+
+      {/* Main Content */}
+      <section className="relative z-10 px-4 py-10">
+        <div className="container-xl lg:container mx-auto">
+          
+          {/* Country Filter */}
+          {!isHome && (
+            <div className="flex justify-center gap-4 mb-8">
+              <select
+                value={country}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setCountry(value);
+                  setSearchParams({ country: value });
+                  setPage(1);
+                  setJobs([]);
+                  setHasMore(true);
+                }}
+                className="bg-white/10 border border-white/20 text-white rounded-lg px-6 py-3 focus:outline-none focus:border-blue-500 transition-all duration-300 cursor-pointer backdrop-blur-sm"
+              >
+                <option value="recent" className="bg-slate-900">Recent Jobs</option>
+                <option value="in" className="bg-slate-900">India</option>
+                <option value="us" className="bg-slate-900">USA</option>
+                <option value="gb" className="bg-slate-900">UK</option>
+                <option value="ca" className="bg-slate-900">Canada</option>
+                <option value="au" className="bg-slate-900">Australia</option>
+              </select>
+            </div>
+          )}
+
+          {/* Job Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {jobs.map((job, index) => (
+              <div 
+                key={job._id || job.id}
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <JobListing job={job} />
+              </div>
+            ))}
+          </div>
+
+          {/* Loading Spinner */}
+          {loading && (
+            <div className="flex justify-center mt-8">
+              <div className="animate-spin h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+            </div>
+          )}
+
+          {/* Load More Button */}
+          {hasMore && !loading && !isHome && country !== "recent" && (
+            <div className="text-center mt-10">
+              <button
+                type="button"
+                onClick={() => setPage((prev) => prev + 1)}
+                className="btn-modern bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-600 hover:to-blue-500 text-white px-8 py-3 rounded-lg font-semibold hover-lift shadow-lg transition-all duration-300"
+              >
+                Load More Jobs
+              </button>
+            </div>
+          )}
         </div>
       </section>
-    )}
-    <section className=" px-4 py-10">
-      <div className="container-xl lg:container m-auto ">
-        {!isHome && (
-          <div className="flex justify-center gap-4 mb-6 ">
-            <select
-              value={country}
-              onChange={(e) => {
-                const value = e.target.value;
-              
-                setCountry(value);
-                setSearchParams({ country: value });
-                setPage(1);
-                setJobs([]);
-                setHasMore(true);
-              }}
-              
-              className="border px-4 py-2 rounded-lg text-white bg-gray-800 cursor-pointer"
-            >
-              
-               <option value="recent">Recent Jobs</option>
-              <option value="in">India</option>
-              <option value="us">USA</option>
-              <option value="gb">UK</option>
-              <option value="ca">Canada</option>
-              <option value="au">Australia</option>
-              
-
-            </select>
-          </div>
-        )}
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {jobs.map((job) => (
-            <JobListing key={job._id || job.id} job={job} />
-          ))}
-        </div>
-
-        {loading && (
-          <div className="flex justify-center mt-8">
-            <div className="animate-spin h-8 w-8 border-4 border-indigo-500 border-t-transparent rounded-full"></div>
-          </div>
-        )}
-
-{hasMore && !loading && !isHome && country !== "recent" && (
-          <div className="text-center mt-8">
-            <button
-              type="button"
-              onClick={() => setPage((prev) => prev + 1)}
-              className="bg-blue-700 hover:bg-blue-900 text-white px-6 py-2 rounded-lg"
-            >
-              Load More Jobs
-            </button>
-          </div>
-        )}
-      </div>
-    </section>
     </div>
   );
 };

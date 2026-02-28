@@ -218,7 +218,7 @@ const Register = () => {
 
           {/* Home Link */}
           <div className="mt-6 pt-6 border-t border-white/10 text-center">
-            <Link to="/home" className="text-gray-400 hover:text-blue-400 text-sm transition-colors duration-300">
+            <Link to="/" className="text-gray-400 hover:text-blue-400 text-sm transition-colors duration-300">
               ← Back to Home
             </Link>
           </div>

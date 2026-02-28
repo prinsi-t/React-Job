@@ -130,9 +130,9 @@ const JobListings = ({ isHome = false }) => {
    
     <div className="bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950">
     {!isHome && (
-      <section>
-        <div className="  m-auto py-6 px-6">
-          <Link to="/" className="text-white hover:text-blue-300 flex items-center ml-60">
+      <section className="relative z-10">
+        <div className="container mx-auto py-6 px-6">
+          <Link to='/' className="text-white hover:text-blue-300 flex items-center transition-colors duration-300">
             <FaArrowLeft className="mr-2" /> Back to Home
           </Link>
         </div>

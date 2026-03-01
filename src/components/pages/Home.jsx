@@ -16,42 +16,44 @@ const Home = () => {
       {/* Hero Section */}
       <div className="flex-grow flex items-center justify-center px-6 py-20 relative z-10">
         
-        {/* Main Card */}
-        <div className="modern-card max-w-md w-full text-center hover-lift animate-fadeInUp">
+        {/* Main Card - Made Much Wider */}
+        <div className="modern-card max-w-3xl w-full text-center hover-lift animate-fadeInUp py-12 px-12">
 
-          <h1 className="text-4xl md:text-5xl font-black mb-4 hover:scale-105 transition-transform duration-300 ">
+          <h1 className="text-5xl md:text-6xl font-black mb-6 hover:scale-105 transition-transform duration-300">
             <span className="bg-gradient-to-r from-blue-500 to-blue-600 bg-clip-text text-transparent">
               Welcome to
             </span>
             <br />
-            <span className="text-white">ReactJobs.com</span>
+            <span className="text-white text-5xl md:text-6xl">ReactJobs.com</span>
           </h1>
 
-          <p className="text-gray-400 mb-8 text-lg">
+          <p className="text-gray-300 mb-10 text-xl leading-relaxed max-w-2xl mx-auto">
             Find your dream job faster 🚀
             <br />
-            Explore thousands of job listings and find the perfect job for you.
+            <span className="text-gray-400">
+              Explore thousands of job listings and find the perfect job for you.
+            </span>
           </p>
 
-          <div className="space-y-4">
+          <div className="flex flex-col md:flex-row gap-5 max-w-lg mx-auto">
             <Link
               to="/login"
-              className="btn-modern bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-800 hover:to-blue-900 text-white py-3 rounded-lg font-semibold hover-lift w-full block shadow-2xl"
+              className="btn-modern bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-600 hover:to-blue-500 text-white py-4 rounded-lg text-lg font-semibold hover-lift flex-1 shadow-2xl"
             >
               Login
             </Link>
 
             <Link
               to="/register"
-              className="btn-modern glass bg-gradient-to-r hover:from-gray-800/40 hover:to-gray-900/40 text-white py-3 rounded-lg font-semibold hover-lift w-full block"
+              className="btn-modern glass bg-gradient-to-r hover:from-blue-700/40 hover:to-blue-600/40 text-white py-4 rounded-lg text-lg font-semibold hover-lift flex-1 border border-white/20"
             >
               Register
             </Link>
           </div>
 
           {/* Updated Message */}
-          <div className="mt-8 pt-6 border-t border-white/10">
-            <p className="text-gray-400 text-sm">
+          <div className="mt-10 pt-8 border-t border-white/10">
+            <p className="text-gray-400 text-base">
               Sign in or register to browse jobs
             </p>
           </div>

@@ -14,7 +14,7 @@ const Home = () => {
       </div>
 
       {/* Hero Section */}
-      <div className="flex-grow flex items-center justify-center px-6 py-30 relative z-10">
+      <div className="flex-grow flex items-center justify-center px-6 py-20 relative z-10">
         
         {/* Main Card - Made Much Wider */}
         <div className="modern-card max-w-xl w-full text-center hover-lift animate-fadeInUp py-12 px-12">

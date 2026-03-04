@@ -11,7 +11,9 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [submitError, setSubmitError] = useState("");
   const currentYear = new Date().getFullYear();
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
   const calculatePasswordStrength = (password) => {
     let strength = 0;
@@ -66,7 +68,7 @@ const Register = () => {
     if (emailError) setEmailError("");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const emailValidationError = validateEmail(email);
     const passwordValidationError = validatePassword(password);
@@ -83,15 +85,33 @@ const Register = () => {
 
     setEmailError("");
     setPasswordError("");
+    setSubmitError("");
 
-    const user = {
-      id: Date.now(),
-      name: e.target.name.value,
-      email: email,
+    const name = e.currentTarget.elements.name?.value?.trim() || "";
+    const payload = {
+      name,
+      email,
+      password,
     };
 
-    login(user);
-    navigate("/", { replace: true });
+    try {
+      const res = await fetch(`${API_URL}/api/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setSubmitError(data?.message || "Registration failed");
+        return;
+      }
+
+      login(data);
+      navigate("/", { replace: true });
+    } catch {
+      setSubmitError("Registration failed");
+    }
   };
 
   const strength = calculatePasswordStrength(password);
@@ -206,6 +226,9 @@ const Register = () => {
             >
               Register
             </button>
+            {submitError && (
+              <p className="text-red-400 text-sm mt-2">{submitError}</p>
+            )}
           </form>
 
           {/* Login Link */}

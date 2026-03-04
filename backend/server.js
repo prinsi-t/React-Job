@@ -3,16 +3,12 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import axios from "axios";
+import bcrypt from "bcryptjs";
 
 dotenv.config();
 
 const app = express();
 app.use(cors());
-
-app.use(cors({
-  origin: "*"
-}));
-
 app.use(express.json());
 
 // connect mongo
@@ -44,6 +40,16 @@ const JobSchema = new mongoose.Schema({
 
 const Job = mongoose.model("Job", JobSchema);
 
+const UserSchema = new mongoose.Schema({
+  name: String,
+  email: { type: String, unique: true },
+  passwordHash: String,
+}, {
+  timestamps: true
+});
+
+const User = mongoose.model("User", UserSchema);
+
 let adzunaCache = {};
 
 
@@ -55,6 +61,50 @@ app.get("/", (req, res) => {
 app.get("/api/jobs", async (req, res) => {
   const jobs = await Job.find().sort({ createdAt: -1 });
   res.json(jobs);
+});
+
+app.post("/api/auth/register", async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const existing = await User.findOne({ email });
+    if (existing) {
+      return res.status(409).json({ message: "Email already registered" });
+    }
+
+    const passwordHash = await bcrypt.hash(password, 10);
+    const user = await User.create({ name, email, passwordHash });
+    res.json({ id: user._id, name: user.name, email: user.email });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.post("/api/auth/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password required" });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.passwordHash);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    res.json({ id: user._id, name: user.name, email: user.email });
+  } catch (err) {
+    res.status(500).json({ message: "Login failed" });
+  }
 });
 
 app.post("/api/jobs", async (req, res) => {
@@ -178,13 +228,9 @@ app.get("/api/live-jobs/:id", async (req, res) => {
   }
 });
 
-setInterval(() => {
-  fetch("https://your-backend.onrender.com");
-}, 1000 * 60 * 5);
-
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(process.env.PORT, () =>
-  console.log(`Server running on port ${process.env.PORT}`)
+app.listen(PORT, () =>
+  console.log(`Server running on port ${PORT}`)
 );

@@ -9,8 +9,10 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
-const [passwordError, setPasswordError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [submitError, setSubmitError] = useState("");
   const currentYear = new Date().getFullYear();
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
   const validateEmail = (email) => {
     if (!email) return "Email is required";
@@ -39,7 +41,7 @@ const [passwordError, setPasswordError] = useState("");
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
   
     const emailValidationError = validateEmail(email);
@@ -57,14 +59,26 @@ const [passwordError, setPasswordError] = useState("");
   
     setEmailError("");
     setPasswordError("");
-  
-    const user = {
-      email,
-      password,
-    };
-  
-    login(user);
-    navigate("/", { replace: true });
+    setSubmitError("");
+
+    try {
+      const res = await fetch(`${API_URL}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setSubmitError(data?.message || "Login failed");
+        return;
+      }
+
+      login(data);
+      navigate("/", { replace: true });
+    } catch {
+      setSubmitError("Login failed");
+    }
   };
 
   const isEmailValid = email && validateEmail(email) === "";
@@ -108,18 +122,16 @@ const [passwordError, setPasswordError] = useState("");
               type="password"
               placeholder="Password"
               value={password}
-  onChange={(e) => {
-    setPassword(e.target.value);
-    if (passwordError) setPasswordError("");
-
-    {passwordError && (
-      <p className="text-red-400 text-sm mt-1">{passwordError}</p>
-    )}
-  }}
-  
+              onChange={(e) => {
+                setPassword(e.target.value);
+                if (passwordError) setPasswordError("");
+              }}
               className="w-full bg-white/10 border border-white/20 text-white placeholder-gray-400 p-3 rounded-lg focus:outline-none focus:border-blue-500 transition-all duration-300"
               required
             />
+            {passwordError && (
+              <p className="text-red-400 text-sm mt-1">{passwordError}</p>
+            )}
 
             {/* Submit Button */}
             <button 
@@ -128,6 +140,9 @@ const [passwordError, setPasswordError] = useState("");
             >
               Login
             </button>
+            {submitError && (
+              <p className="text-red-400 text-sm mt-2">{submitError}</p>
+            )}
           </form>
 
           {/* Register Link */}

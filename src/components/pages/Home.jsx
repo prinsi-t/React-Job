@@ -19,15 +19,15 @@ const Home = () => {
         {/* Main Card - Made Much Wider */}
         <div className="modern-card max-w-2xl w-full text-center hover-lift animate-fadeInUp py-12 px-12">
 
-          <h1 className="text-5xl md:text-6xl font-black mb-6 hover:scale-105 transition-transform duration-300">
+          <h1 className="text-5xl md:text-6xl font-black mb-10 hover:scale-105 transition-transform duration-300">
             <span className="bg-gradient-to-r from-blue-500 to-blue-600 bg-clip-text text-transparent">
               Welcome to
             </span>
             <br />
-            <span className="text-white text-5xl md:text-6xl">ReactJobs.com</span>
+            <span className="text-white text-4xl md:text-5xl">ReactJobs.com</span>
           </h1>
 
-          <p className="text-gray-300 mb-10 text-lg leading-relaxed max-w-2xl mx-auto">
+          <p className="text-gray-300 mb-15 text-lg leading-relaxed max-w-xl mx-auto">
             Find your dream job faster 🚀
             <br />
             <span className="text-gray-400">
@@ -35,17 +35,17 @@ const Home = () => {
             </span>
           </p>
 
-          <div className="flex flex-col md:flex-row gap-5 max-w-md mx-auto">
+          <div className="flex flex-col md:flex-row gap-5 max-w-sm mx-auto">
             <Link
               to="/login"
-              className="btn-modern bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-600 hover:to-blue-500 text-white py-4 rounded-lg text-lg font-semibold hover-lift flex-1 shadow-2xl"
+              className="btn-modern bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-600 hover:to-blue-500 text-white py-4 rounded-md text-md font-semibold hover-lift flex-1 shadow-2xl"
             >
               Login
             </Link>
 
             <Link
               to="/register"
-              className="btn-modern glass bg-gradient-to-r hover:from-blue-700/40 hover:to-blue-600/40 text-white py-4 rounded-lg text-lg font-semibold hover-lift flex-1 border border-white/20"
+              className="btn-modern glass bg-gradient-to-r hover:from-blue-700/40 hover:to-blue-600/40 text-white py-4 rounded-md text-md font-semibold hover-lift flex-1 border border-white/20"
             >
               Register
             </Link>

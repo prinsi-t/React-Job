@@ -20,9 +20,10 @@ import JobListings from "./components/JobListings";
 
 const App = () => {
   const { user } = useAuth();
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
   const addJob = async (newJob) => {
-    await fetch("http://localhost:5000/api/jobs", {
+    await fetch(`${API_URL}/api/jobs`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newJob),
@@ -30,13 +31,13 @@ const App = () => {
   };
 
   const deleteJob = async (id) => {
-    await fetch(`http://localhost:5000/api/jobs/${id}`, {
+    await fetch(`${API_URL}/api/jobs/${id}`, {
       method: "DELETE",
     });
   };
 
   const updateJob = async (job) => {
-    await fetch(`http://localhost:5000/api/jobs/${job.id}`, {
+    await fetch(`${API_URL}/api/jobs/${job.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(job),

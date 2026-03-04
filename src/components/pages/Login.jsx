@@ -16,14 +16,8 @@ const Login = () => {
 
   const validateEmail = (email) => {
     if (!email) return "Email is required";
-    
-    const hasAt = email.includes("@");
-    const hasDotCom = email.includes(".com");
-    
-    if (!hasAt && !hasDotCom) {
-      return "Email must contain @ or .com";
-    }
-    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) return "Please enter a valid email address";
     return "";
   };
 
@@ -37,7 +31,15 @@ const Login = () => {
     const newEmail = e.target.value;
     setEmail(newEmail);
     if (emailError) {
-      setEmailError("");
+      setEmailError(validateEmail(newEmail));
+    }
+  };
+
+  const handlePasswordChange = (e) => {
+    const newPassword = e.target.value;
+    setPassword(newPassword);
+    if (passwordError) {
+      setPasswordError(validatePassword(newPassword));
     }
   };
 
@@ -122,10 +124,7 @@ const Login = () => {
               type="password"
               placeholder="Password"
               value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                if (passwordError) setPasswordError("");
-              }}
+              onChange={handlePasswordChange}
               className="w-full bg-white/10 border border-white/20 text-white placeholder-gray-400 p-3 rounded-lg focus:outline-none focus:border-blue-500 transition-all duration-300"
               required
             />
@@ -135,8 +134,7 @@ const Login = () => {
 
             {/* Submit Button */}
             <button 
-              className="btn-modern cursor-pointer w-full bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-800 hover:to-blue-900 text-white py-3 rounded-lg font-semibold hover-lift disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
-              disabled={!isEmailValid}
+              className="btn-modern cursor-pointer w-full bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-800 hover:to-blue-900 text-white py-3 rounded-lg font-semibold hover-lift transition-all duration-300"
             >
               Login
             </button>

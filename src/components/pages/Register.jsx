@@ -28,8 +28,8 @@ const Register = () => {
 
   const getStrengthInfo = (strength) => {
     if (strength === 0) return { label: "", color: "", width: "0%" };
-    if (strength <= 2) return { label: "Weak", color: "bg-red-500", width: "33%" };
-    if (strength <= 4) return { label: "Medium", color: "bg-yellow-500", width: "66%" };
+    if (strength <= 3) return { label: "Weak", color: "bg-red-500", width: "33%" };
+    if (strength <= 5) return { label: "Medium", color: "bg-yellow-500", width: "66%" };
     return { label: "Strong", color: "bg-green-500", width: "100%" };
   };
 
@@ -50,22 +50,27 @@ const Register = () => {
 
   const validateEmail = (email) => {
     if (!email) return "Email is required";
-    const hasAt = email.includes("@");
-    const hasDotCom = email.includes(".com");
-    if (!hasAt && !hasDotCom) return "Email must contain @ or .com";
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) return "Please enter a valid email address";
     return "";
   };
 
   const handlePasswordChange = (e) => {
     const newPassword = e.target.value;
     setPassword(newPassword);
-    if (passwordError) setPasswordError("");
+    // Clear error if it was previously set and is now valid
+    if (passwordError) {
+      setPasswordError(validatePassword(newPassword));
+    }
   };
 
   const handleEmailChange = (e) => {
     const newEmail = e.target.value;
     setEmail(newEmail);
-    if (emailError) setEmailError("");
+    // Clear error if it was previously set and is now valid
+    if (emailError) {
+      setEmailError(validateEmail(newEmail));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -221,8 +226,7 @@ const Register = () => {
 
             {/* Submit Button */}
             <button 
-              className="btn-modern w-full cursor-pointer bg-gradient-to-r from-blue-700 to-blue-600 text-white py-3 rounded-lg font-semibold hover-lift disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
-              disabled={!isEmailValid || !isPasswordValid}
+              className="btn-modern w-full cursor-pointer bg-gradient-to-r from-blue-700 to-blue-600 text-white py-3 rounded-lg font-semibold hover-lift transition-all duration-300"
             >
               Register
             </button>

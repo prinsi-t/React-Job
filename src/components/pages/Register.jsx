@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { FaTwitter, FaYoutube, FaFacebook } from "react-icons/fa";
+import { FaTwitter, FaYoutube, FaFacebook, FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -11,6 +11,7 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const currentYear = new Date().getFullYear();
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
@@ -91,6 +92,7 @@ const Register = () => {
     setEmailError("");
     setPasswordError("");
     setSubmitError("");
+    setIsLoading(true);
 
     const name = e.currentTarget.elements.name?.value?.trim() || "";
     const payload = {
@@ -109,6 +111,7 @@ const Register = () => {
       const data = await res.json();
       if (!res.ok) {
         setSubmitError(data?.message || "Registration failed");
+        setIsLoading(false);
         return;
       }
 
@@ -116,6 +119,7 @@ const Register = () => {
       navigate("/", { replace: true });
     } catch {
       setSubmitError("Registration failed");
+      setIsLoading(false);
     }
   };
 
@@ -126,7 +130,25 @@ const Register = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950 flex flex-col relative overflow-hidden">
-      
+       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap');
+        
+        .login-title {
+          font-family: 'Playfair Display', serif;
+          font-weight: 700;
+          letter-spacing: -0.02em;
+        }
+
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: #ffffff;
+          transition: background-color 5000s ease-in-out 0s;
+          box-shadow: inset 0 0 20px 20px rgba(255, 255, 255, 0.1);
+        }
+      `}</style>
       {/* Floating Background Elements */}
       <div className="absolute inset-0 pointer-events-none z-0">
         <div className="absolute top-20 left-10 w-96 h-96 bg-blue-900/20 rounded-full blur-3xl animate-float"></div>
@@ -135,28 +157,39 @@ const Register = () => {
 
       {/* Register Form */}
       <div className="flex-grow flex items-center justify-center px-6 py-20 relative z-10">
-        <div className="modern-card max-w-md w-full hover-lift animate-fadeInUp">
-          <h2 className="text-3xl font-bold mb-6 text-white text-center">Register</h2>
+        <div className="modern-card max-w-lg w-full hover-lift animate-fadeInUp px-8 md:px-10">
+          <h2 className="login-title text-4xl font-bold mb-3 text-white text-center bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Sign Up</h2>
+          <p className="text-base mb-6 text-gray-300 text-center leading-relaxed">🌟 Create an account to discover jobs and start your career journey today. </p>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5 max-w-sm mx-auto">
             {/* Name */}
+            <div>
+               <label className="block text-sm font-semibold text-gray-300 mb-2">
+                Your Name
+              </label>
             <input
+           
               name="name"
-              placeholder="Name"
-              className="w-full bg-white/10 border border-white/20 text-white placeholder-gray-400 p-3 rounded-lg focus:outline-none focus:border-blue-500 transition-all duration-300"
+              placeholder="Your Name"
+              className="w-full bg-white/10 border border-white/20 text-white placeholder-gray-400 p-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300"
               required
             />
+            </div>
 
             {/* Email */}
             <div>
+             <label className="block text-sm font-semibold text-gray-300 mb-2">
+                Email Address
+              </label>
               <input
                 name="email"
-                type="text"
-                placeholder="Email"
-                className="w-full bg-white/10 border border-white/20 text-white placeholder-gray-400 p-3 rounded-lg focus:outline-none focus:border-blue-500 transition-all duration-300"
+                type="email"
+                placeholder="your.email@example.com"
+                className="w-full bg-white/10 border border-white/20 text-white placeholder-gray-500 p-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300"
                 value={email}
                 onChange={handleEmailChange}
                 required
+                disabled={isLoading}
               />
               {emailError && (
                 <p className="text-red-400 text-sm mt-1">{emailError}</p>
@@ -164,34 +197,34 @@ const Register = () => {
             </div>
 
             {/* Password */}
-            <div>
-              <div className="relative">
-                <input
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Password"
-                  value={password}
-                  onChange={handlePasswordChange}
-                  className="w-full bg-white/10 border border-white/20 text-white placeholder-gray-400 p-3 pr-10 rounded-lg focus:outline-none focus:border-blue-500 transition-all duration-300"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-3 text-gray-400 hover:text-white transition-colors duration-300"
-                >
-                  {showPassword ? (
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
-                    </svg>
-                  ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                  )}
-                </button>
-              </div>
+         <div>
+                       <label className="block text-sm font-semibold text-gray-300 mb-2">
+                         Password
+                       </label>
+                       <div className="relative">
+                         <input
+                           name="password"
+                           type={showPassword ? "text" : "password"}
+                           placeholder="Enter your password"
+                           value={password}
+                           onChange={handlePasswordChange}
+                           className="w-full bg-white/10 border border-white/20 text-white placeholder-gray-500 p-3 pr-12 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300"
+                           required
+                           disabled={isLoading}
+                         />
+                         <button
+                           type="button"
+                           onClick={() => setShowPassword(!showPassword)}
+                           className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors duration-300 p-1"
+                           disabled={isLoading}
+                         >
+                           {showPassword ? (
+                             <FaEyeSlash className="w-5 h-5" />
+                           ) : (
+                             <FaEye className="w-5 h-5" />
+                           )}
+                         </button>
+                       </div>
 
               {/* Password Strength */}
               {password && (
@@ -219,16 +252,30 @@ const Register = () => {
                 <p className="text-red-400 text-sm mt-1">{passwordError}</p>
               )}
 
-              <p className="text-gray-500 text-xs mt-2">
+              <p className="text-gray-400 text-xs mt-3">
                 Password must contain: 8+ characters, uppercase, lowercase, number, and special character
               </p>
             </div>
 
-            {/* Submit Button */}
+           
+           
+
             <button 
-              className="btn-modern w-full cursor-pointer bg-gradient-to-r from-blue-700 to-blue-600 text-white py-3 rounded-lg font-semibold hover-lift transition-all duration-300"
+              type="submit"
+              className="btn-modern cursor-pointer w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white py-3.5 rounded-lg font-bold text-lg hover-lift transition-all duration-300 shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={isLoading}
             >
-              Register
+              {isLoading ? (
+                <span className="flex items-center justify-center">
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Signing Up...
+                </span>
+              ) : (
+                "Sign Up →"
+              )}
             </button>
             {submitError && (
               <p className="text-red-400 text-sm mt-2">{submitError}</p>

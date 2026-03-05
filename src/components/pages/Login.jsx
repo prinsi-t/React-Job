@@ -124,7 +124,7 @@ const Login = () => {
         <div className="modern-card max-w-lg w-full hover-lift animate-fadeInUp px-8 md:px-10">
           
           {/* Title with different font */}
-          <h2 className="login-title text-5xl font-bold mb-3 text-white text-center bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+          <h2 className="login-title text-4xl font-bold mb-3 text-white text-center bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
             Log In
           </h2>
 

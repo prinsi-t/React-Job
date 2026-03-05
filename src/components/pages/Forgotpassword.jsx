@@ -245,14 +245,7 @@ const ForgotPassword = () => {
                 {isLoading ? "Verifying..." : "Verify OTP →"}
               </button>
 
-              <button
-                type="button"
-                onClick={() => setStep(1)}
-                className="w-full text-gray-400 hover:text-white text-sm transition-colors"
-                disabled={isLoading}
-              >
-                ← Back to email
-              </button>
+             
             </form>
           )}
 
@@ -313,7 +306,7 @@ const ForgotPassword = () => {
           )}
 
           {/* Divider */}
-          <div className="relative my-8">
+          <div className="relative my-10">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-white/10"></div>
             </div>

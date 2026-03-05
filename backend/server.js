@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import axios from "axios";
 import bcrypt from "bcryptjs";
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
 dotenv.config();
 
@@ -55,17 +55,7 @@ const User = mongoose.model("User", UserSchema);
 
 let adzunaCache = {};
 
-const createTransporter = () => {
-  const user = process.env.EMAIL_USER;
-  const pass = process.env.EMAIL_PASSWORD;
-  if (!user || !pass) {
-    return null;
-  }
-  return nodemailer.createTransport({
-    service: "gmail",
-    auth: { user, pass },
-  });
-};
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 app.get("/", (req, res) => {
   res.send("Jobs API is running 🚀");
@@ -147,14 +137,13 @@ app.post("/api/auth/forgot-password", async (req, res) => {
     user.resetOTPExpiry = new Date(Date.now() + 10 * 60 * 1000);
     await user.save();
 
-    const transporter = createTransporter();
-    if (!transporter) {
+    if (!resend || !process.env.RESEND_FROM) {
       return res.status(500).json({ message: "Email service not configured" });
     }
 
-    await transporter.sendMail({
-      from: `ReactJobs.com <${process.env.EMAIL_USER}>`,
-      to: email,
+    await resend.emails.send({
+      from: process.env.RESEND_FROM,
+      to: [email],
       subject: "Password Reset OTP - ReactJobs",
       html: `
         <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4;">
@@ -179,8 +168,9 @@ app.post("/api/auth/forgot-password", async (req, res) => {
       message: "OTP sent to your email",
     });
   } catch (err) {
-    console.error("Forgot password error:", err);
-    res.status(500).json({ message: err.message || "Failed to send OTP" });
+    const details = err?.response?.data?.message || err?.message || "Failed to send OTP";
+    console.error("Forgot password error:", details);
+    res.status(500).json({ message: details });
   }
 });
 

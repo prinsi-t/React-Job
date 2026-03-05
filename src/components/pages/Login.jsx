@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { FaTwitter, FaYoutube, FaFacebook } from "react-icons/fa";
+import { FaTwitter, FaYoutube, FaFacebook, FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -11,8 +11,10 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [submitError, setSubmitError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const currentYear = new Date().getFullYear();
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
   const validateEmail = (email) => {
     if (!email) return "Email is required";
@@ -62,6 +64,7 @@ const Login = () => {
     setEmailError("");
     setPasswordError("");
     setSubmitError("");
+    setIsLoading(true);
 
     try {
       const res = await fetch(`${API_URL}/api/auth/login`, {
@@ -73,13 +76,15 @@ const Login = () => {
 
       if (!res.ok) {
         setSubmitError(data?.message || "Login failed");
+        setIsLoading(false);
         return;
       }
 
       login(data);
       navigate("/", { replace: true });
     } catch {
-      setSubmitError("Login failed");
+      setSubmitError("Network error. Please try again.");
+      setIsLoading(false);
     }
   };
 
@@ -88,7 +93,25 @@ const Login = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950 flex flex-col relative overflow-hidden">
       
-      
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap');
+        
+        .login-title {
+          font-family: 'Playfair Display', serif;
+          font-weight: 700;
+          letter-spacing: -0.02em;
+        }
+
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: #ffffff;
+          transition: background-color 5000s ease-in-out 0s;
+          box-shadow: inset 0 0 20px 20px rgba(255, 255, 255, 0.1);
+        }
+      `}</style>
 
       {/* Floating Background Elements */}
       <div className="absolute inset-0 pointer-events-none z-0">
@@ -98,63 +121,136 @@ const Login = () => {
 
       {/* Login Form */}
       <div className="flex-grow flex items-center justify-center px-6 py-20 relative z-10">
-        <div className="modern-card max-w-md w-full hover-lift animate-fadeInUp">
-          <h2 className="text-3xl font-bold mb-6 text-white text-center">Login</h2>
+        <div className="modern-card max-w-xl w-full hover-lift animate-fadeInUp px-12 md:px-16">
+          
+          {/* Title with different font */}
+          <h2 className="login-title text-5xl font-bold mb-3 text-white text-center bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+            Log In
+          </h2>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Welcome message */}
+          <p className="text-base mb-8 text-gray-300 text-center leading-relaxed">
+            👋 Welcome back! Log in to access your account and explore new opportunities.
+          </p>
+
+          <form onSubmit={handleSubmit} className="space-y-5 max-w-md mx-auto">
+            
             {/* Email */}
             <div>
+              <label className="block text-sm font-semibold text-gray-300 mb-2">
+                Email Address
+              </label>
               <input
                 name="email"
-                type="text"
-                placeholder="Email"
-                className="w-full bg-white/10 border border-white/20 text-white placeholder-gray-400 p-3 rounded-lg focus:outline-none focus:border-blue-500 transition-all duration-300"
+                type="email"
+                placeholder="your.email@example.com"
+                className="w-full bg-white/10 border border-white/20 text-white placeholder-gray-500 p-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300"
                 value={email}
                 onChange={handleEmailChange}
                 required
+                disabled={isLoading}
               />
               {emailError && (
-                <p className="text-red-400 text-sm mt-1">{emailError}</p>
+                <p className="text-red-400 text-sm mt-2 flex items-center">
+                  <span className="mr-1">⚠️</span> {emailError}
+                </p>
               )}
             </div>
 
-            {/* Password */}
-            <input
-              name="password"
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={handlePasswordChange}
-              className="w-full bg-white/10 border border-white/20 text-white placeholder-gray-400 p-3 rounded-lg focus:outline-none focus:border-blue-500 transition-all duration-300"
-              required
-            />
-            {passwordError && (
-              <p className="text-red-400 text-sm mt-1">{passwordError}</p>
+            {/* Password with show/hide */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-300 mb-2">
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={handlePasswordChange}
+                  className="w-full bg-white/10 border border-white/20 text-white placeholder-gray-500 p-3 pr-12 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300"
+                  required
+                  disabled={isLoading}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors duration-300 p-1"
+                  disabled={isLoading}
+                >
+                  {showPassword ? (
+                    <FaEyeSlash className="w-5 h-5" />
+                  ) : (
+                    <FaEye className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
+              {passwordError && (
+                <p className="text-red-400 text-sm mt-2 flex items-center">
+                  <span className="mr-1">⚠️</span> {passwordError}
+                </p>
+              )}
+              
+              {/* Forgot Password Link */}
+              <div className="text-right mt-2">
+                <a href="#" className="text-sm text-blue-400 hover:text-blue-300 transition-colors duration-300">
+                  Forgot password?
+                </a>
+              </div>
+            </div>
+
+            {/* Submit Error */}
+            {submitError && (
+              <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3">
+                <p className="text-red-400 text-sm flex items-center">
+                  <span className="mr-2">❌</span> {submitError}
+                </p>
+              </div>
             )}
 
             {/* Submit Button */}
             <button 
-              className="btn-modern cursor-pointer w-full bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-800 hover:to-blue-900 text-white py-3 rounded-lg font-semibold hover-lift transition-all duration-300"
+              type="submit"
+              className="btn-modern cursor-pointer w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white py-3.5 rounded-lg font-bold text-lg hover-lift transition-all duration-300 shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={isLoading}
             >
-              Login
+              {isLoading ? (
+                <span className="flex items-center justify-center">
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Logging in...
+                </span>
+              ) : (
+                "Log In →"
+              )}
             </button>
-            {submitError && (
-              <p className="text-red-400 text-sm mt-2">{submitError}</p>
-            )}
           </form>
 
+          {/* Divider */}
+          <div className="relative my-8">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-white/10"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-4 bg-transparent text-gray-400">or</span>
+            </div>
+          </div>
+
           {/* Register Link */}
-          <p className="text-center mt-6 text-gray-400 text-sm">
+          <p className="text-center text-gray-400 text-sm">
             Don't have an account?{" "}
-            <Link to="/register" className="text-blue-400 hover:text-blue-300 font-semibold transition-colors duration-300">
-              Register
+            <Link to="/register" className="text-blue-400 hover:text-blue-300 font-bold transition-colors duration-300 underline underline-offset-2">
+              Create one now
             </Link>
           </p>
 
           {/* Home Link */}
-          <div className="mt-6 pt-6 border-t border-white/10 text-center">
-            <Link to="/" className="text-gray-400 hover:text-blue-400 text-sm transition-colors duration-300">
-              ← Back to Home
+          <div className="mt-8 pt-6 border-t border-white/10 text-center">
+            <Link to="/" className="text-gray-400 hover:text-blue-400 text-sm transition-colors duration-300 flex items-center justify-center">
+              <span className="mr-2">←</span> Back to Home
             </Link>
           </div>
         </div>

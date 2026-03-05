@@ -10,7 +10,7 @@ const HomeCards = () => {
           
           {/* For Developers Card */}
           <div className="modern-card hover-lift animate-fadeInUp bg-gradient-to-br from-slate-900/90 via-blue-950/90 to-slate-900/90 backdrop-blur-sm">
-            <h2 className="text-2xl font-bold text-white mb-3">For Developers</h2>
+            <h2 className="text-2xl font-bold text-white mb-3">For Developers 🧑‍💻</h2>
             <p className="text-gray-300 mb-6">
               Browse our React jobs and start your career today
             </p>
@@ -24,7 +24,7 @@ const HomeCards = () => {
 
           {/* For Employers Card */}
           <div className="modern-card hover-lift animate-fadeInUp animation-delay-200 bg-gradient-to-br from-indigo-900/90 via-purple-950/90 to-indigo-900/90 backdrop-blur-sm">
-            <h2 className="text-2xl font-bold text-white mb-3">For Employers</h2>
+            <h2 className="text-2xl font-bold text-white mb-3">For Employers 🏢</h2>
             <p className="text-gray-300 mb-6">
               List your job to find the perfect developer for the role
             </p>

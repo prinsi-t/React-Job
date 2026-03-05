@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Hero = ({ title = "Become a React Dev", subtitle = "Find the React job that fits your skills and needs" }) => {
+const Hero = ({ title = "Become a React Dev", subtitle = "Find the React job that fits your skills and needs 💼" }) => {
   return (
     <section className="bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950 py-30 relative overflow-hidden">
       

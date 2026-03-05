@@ -14,7 +14,7 @@ const ForgotPassword = () => {
   const [success, setSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const currentYear = new Date().getFullYear();
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
   // Step 1: Request OTP
   const handleRequestOTP = async (e) => {
@@ -38,7 +38,7 @@ const ForgotPassword = () => {
         return;
       }
 
-      setSuccess("OTP sent to your email!");
+      setSuccess("OTP generated");
       setStep(2);
       setIsLoading(false);
     } catch {
@@ -394,7 +394,7 @@ const ForgotPassword = () => {
         </div>
       </footer>
     </div>
-  ); 
+  );
 };
 
 export default ForgotPassword;

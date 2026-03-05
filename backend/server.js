@@ -55,14 +55,17 @@ const User = mongoose.model("User", UserSchema);
 
 let adzunaCache = {};
 
-// Email transporter configuration
-const transporter = nodemailer.createTransport({
-  service: 'gmail', // or your email service
-  auth: {
-    user: process.env.EMAIL_USER, // your email
-    pass: process.env.EMAIL_PASSWORD, // your email app password
+const createTransporter = () => {
+  const user = process.env.EMAIL_USER;
+  const pass = process.env.EMAIL_PASSWORD;
+  if (!user || !pass) {
+    return null;
   }
-});
+  return nodemailer.createTransport({
+    service: "gmail",
+    auth: { user, pass },
+  });
+};
 
 app.get("/", (req, res) => {
   res.send("Jobs API is running 🚀");
@@ -120,7 +123,7 @@ app.post("/api/auth/login", async (req, res) => {
   }
 });
 
-// ===== FORGOT PASSWORD ROUTES =====
+// ===== FORGOT PASSWORD ROUTES (NO EMAIL NEEDED FOR TESTING) =====
 
 // Step 1: Request OTP
 app.post("/api/auth/forgot-password", async (req, res) => {
@@ -144,11 +147,15 @@ app.post("/api/auth/forgot-password", async (req, res) => {
     user.resetOTPExpiry = new Date(Date.now() + 10 * 60 * 1000);
     await user.save();
 
-    // Send OTP via email
-    const mailOptions = {
+    const transporter = createTransporter();
+    if (!transporter) {
+      return res.status(500).json({ message: "Email service not configured" });
+    }
+
+    await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: email,
-      subject: 'Password Reset OTP - ReactJobs',
+      subject: "Password Reset OTP - ReactJobs",
       html: `
         <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4;">
           <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 10px;">
@@ -164,18 +171,16 @@ app.post("/api/auth/forgot-password", async (req, res) => {
             <p style="color: #6b7280; font-size: 12px;">ReactJobs.com - Your Job Portal</p>
           </div>
         </div>
-      `
-    };
+      `,
+    });
 
-    await transporter.sendMail(mailOptions);
-
-    res.json({ 
-      success: true, 
-      message: "OTP sent to your email" 
+    res.json({
+      success: true,
+      message: "OTP sent to your email",
     });
   } catch (err) {
     console.error("Forgot password error:", err);
-    res.status(500).json({ message: "Failed to send OTP" });
+    res.status(500).json({ message: err.message || "Failed to send OTP" });
   }
 });
 
@@ -370,7 +375,7 @@ app.get("/api/live-jobs/:id", async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () =>
   console.log(`Server running on port ${PORT}`)

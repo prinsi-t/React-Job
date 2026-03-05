@@ -124,7 +124,7 @@ const Login = () => {
         <div className="modern-card max-w-xl w-full hover-lift animate-fadeInUp px-12 md:px-16">
           
           {/* Title with different font */}
-          <h2 className="login-title text-5xl font-bold mb-3 text-white text-center bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+          <h2 className="login-title text-4xl font-bold mb-3 text-white text-center bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
             Log In
           </h2>
 
@@ -144,7 +144,7 @@ const Login = () => {
                 name="email"
                 type="email"
                 placeholder="your.email@example.com"
-                className="w-full bg-white/10 border border-white/20 text-white placeholder-gray-500 p-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300"
+                className="w-full bg-white/10 border border-white/20 text-white placeholder-gray-500 p-2 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300"
                 value={email}
                 onChange={handleEmailChange}
                 required
@@ -169,7 +169,7 @@ const Login = () => {
                   placeholder="Enter your password"
                   value={password}
                   onChange={handlePasswordChange}
-                  className="w-full bg-white/10 border border-white/20 text-white placeholder-gray-500 p-3 pr-12 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300"
+                  className="w-full bg-white/10 border border-white/20 text-white placeholder-gray-500 p-2 pr-12 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300"
                   required
                   disabled={isLoading}
                 />
@@ -212,7 +212,7 @@ const Login = () => {
             {/* Submit Button */}
             <button 
               type="submit"
-              className="btn-modern cursor-pointer w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white py-3.5 rounded-lg font-bold text-lg hover-lift transition-all duration-300 shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-modern cursor-pointer w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white py-3 rounded-lg font-bold text-md hover-lift transition-all duration-300 shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isLoading}
             >
               {isLoading ? (

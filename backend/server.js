@@ -153,7 +153,7 @@ app.post("/api/auth/forgot-password", async (req, res) => {
     }
 
     await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+      from: `ReactJobs.com <${process.env.EMAIL_USER}>`,
       to: email,
       subject: "Password Reset OTP - ReactJobs",
       html: `

@@ -15,7 +15,7 @@ import AddJobPage from "./components/pages/AddJobPage";
 import JobPage from "./components/pages/JobPage";
 import EditJobPage from "./components/pages/EditJobPage";
 import ProtectedRoute from "./components/ProtectedRoute";
-
+import ForgotPassword from './components/pages/ForgotPassword'; 
 import JobListings from "./components/JobListings";
 
 const App = () => {
@@ -51,6 +51,7 @@ const App = () => {
 
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
+<Route path="/forgot-password" element={<ForgotPassword />} />
 
         <Route
           path="/jobs"

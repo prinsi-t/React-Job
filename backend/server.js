@@ -1,16 +1,10 @@
-import path from "path";
-import { fileURLToPath } from "url";
 import dotenv from "dotenv";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-dotenv.config({ path: path.join(__dirname, ".env") });
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import axios from "axios";
 import bcrypt from "bcryptjs";
+import nodemailer from "nodemailer";
 
 dotenv.config();
 
@@ -51,6 +45,8 @@ const UserSchema = new mongoose.Schema({
   name: String,
   email: { type: String, unique: true },
   passwordHash: String,
+  resetOTP: String,
+  resetOTPExpiry: Date,
 }, {
   timestamps: true
 });
@@ -59,6 +55,14 @@ const User = mongoose.model("User", UserSchema);
 
 let adzunaCache = {};
 
+// Email transporter configuration
+const transporter = nodemailer.createTransport({
+  service: 'gmail', // or your email service
+  auth: {
+    user: process.env.EMAIL_USER, // your email
+    pass: process.env.EMAIL_PASSWORD, // your email app password
+  }
+});
 
 app.get("/", (req, res) => {
   res.send("Jobs API is running 🚀");
@@ -69,6 +73,8 @@ app.get("/api/jobs", async (req, res) => {
   const jobs = await Job.find().sort({ createdAt: -1 });
   res.json(jobs);
 });
+
+// ===== AUTHENTICATION ROUTES =====
 
 app.post("/api/auth/register", async (req, res) => {
   try {
@@ -114,6 +120,142 @@ app.post("/api/auth/login", async (req, res) => {
   }
 });
 
+// ===== FORGOT PASSWORD ROUTES =====
+
+// Step 1: Request OTP
+app.post("/api/auth/forgot-password", async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "No account found with this email" });
+    }
+
+    // Generate 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    
+    // Save OTP and expiry (10 minutes)
+    user.resetOTP = otp;
+    user.resetOTPExpiry = new Date(Date.now() + 10 * 60 * 1000);
+    await user.save();
+
+    // Send OTP via email
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'Password Reset OTP - ReactJobs',
+      html: `
+        <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4;">
+          <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 10px;">
+            <h2 style="color: #2563eb;">Password Reset Request</h2>
+            <p>Hello,</p>
+            <p>You requested to reset your password. Use the OTP below to proceed:</p>
+            <div style="background-color: #eff6ff; padding: 20px; text-align: center; margin: 20px 0; border-radius: 8px;">
+              <h1 style="color: #2563eb; font-size: 32px; letter-spacing: 5px; margin: 0;">${otp}</h1>
+            </div>
+            <p><strong>This OTP will expire in 10 minutes.</strong></p>
+            <p>If you didn't request this, please ignore this email.</p>
+            <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;">
+            <p style="color: #6b7280; font-size: 12px;">ReactJobs.com - Your Job Portal</p>
+          </div>
+        </div>
+      `
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.json({ 
+      success: true, 
+      message: "OTP sent to your email" 
+    });
+  } catch (err) {
+    console.error("Forgot password error:", err);
+    res.status(500).json({ message: "Failed to send OTP" });
+  }
+});
+
+// Step 2: Verify OTP
+app.post("/api/auth/verify-otp", async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+      return res.status(400).json({ message: "Email and OTP are required" });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if OTP matches and hasn't expired
+    if (user.resetOTP !== otp) {
+      return res.status(401).json({ message: "Invalid OTP" });
+    }
+
+    if (new Date() > user.resetOTPExpiry) {
+      return res.status(401).json({ message: "OTP has expired" });
+    }
+
+    res.json({ 
+      success: true, 
+      message: "OTP verified successfully" 
+    });
+  } catch (err) {
+    console.error("OTP verification error:", err);
+    res.status(500).json({ message: "Verification failed" });
+  }
+});
+
+// Step 3: Reset Password
+app.post("/api/auth/reset-password", async (req, res) => {
+  try {
+    const { email, otp, newPassword } = req.body;
+
+    if (!email || !otp || !newPassword) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Verify OTP again
+    if (user.resetOTP !== otp) {
+      return res.status(401).json({ message: "Invalid OTP" });
+    }
+
+    if (new Date() > user.resetOTPExpiry) {
+      return res.status(401).json({ message: "OTP has expired" });
+    }
+
+    // Hash new password
+    const passwordHash = await bcrypt.hash(newPassword, 10);
+    
+    // Update password and clear OTP
+    user.passwordHash = passwordHash;
+    user.resetOTP = undefined;
+    user.resetOTPExpiry = undefined;
+    await user.save();
+
+    res.json({ 
+      success: true, 
+      message: "Password reset successfully" 
+    });
+  } catch (err) {
+    console.error("Password reset error:", err);
+    res.status(500).json({ message: "Password reset failed" });
+  }
+});
+
+// ===== JOB ROUTES =====
+
 app.post("/api/jobs", async (req, res) => {
   try {
     const job = await Job.create(req.body);
@@ -133,7 +275,6 @@ app.get("/api/jobs/:id", async (req, res) => {
   }
 });
 
-
 app.put("/api/jobs/:id", async (req, res) => {
   res.json(await Job.findByIdAndUpdate(req.params.id, req.body, { new: true }));
 });
@@ -147,6 +288,7 @@ app.delete("/api/jobs/:id", async (req, res) => {
   }
 });
 
+// ===== ADZUNA ROUTES =====
 
 app.get("/api/live-jobs", async (req, res) => {
   try {
@@ -174,13 +316,6 @@ app.get("/api/live-jobs", async (req, res) => {
         },
       }
     );
-
-    // ✅ DEBUG: Log what fields Adzuna returns
-    if (data.results && data.results.length > 0) {
-      console.log("🔍 Adzuna job fields:", Object.keys(data.results[0]));
-      console.log("📝 Description field:", data.results[0].description?.substring(0, 100));
-      console.log("📝 __description__ field:", data.results[0].__description__?.substring(0, 100));
-    }
 
     adzunaCache[cacheKey] = data.results;
     res.json(data.results);
@@ -235,8 +370,7 @@ app.get("/api/live-jobs/:id", async (req, res) => {
   }
 });
 
-
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () =>
   console.log(`Server running on port ${PORT}`)

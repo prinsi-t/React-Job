@@ -38,7 +38,7 @@ const ForgotPassword = () => {
         return;
       }
 
-      setSuccess("OTP generated");
+      setSuccess("OTP sent to your email.");
       setStep(2);
       setIsLoading(false);
     } catch {
@@ -306,7 +306,7 @@ const ForgotPassword = () => {
           )}
 
           {/* Divider */}
-          <div className="relative my-10">
+          <div className="relative my-10 h-0.5">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-white/10"></div>
             </div>

@@ -1,4 +1,6 @@
 import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
@@ -6,16 +8,40 @@ import axios from "axios";
 import bcrypt from "bcryptjs";
 import { Resend } from "resend";
 
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.join(__dirname, ".env") });
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// connect mongo
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB Connected"))
-  .catch(err => console.log(err));
+const pickMongoUri = () => {
+  if (process.env.MONGO_URI_SEED) return process.env.MONGO_URI_SEED.trim();
+  if (process.env.MONGO_URI) return process.env.MONGO_URI.trim();
+  return "";
+};
+
+const mongoUri = pickMongoUri();
+
+(async () => {
+  try {
+    if (!mongoUri) {
+      throw new Error("Missing MONGO_URI or MONGO_URI_SEED");
+    }
+    await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 10000 });
+    console.log("MongoDB Connected");
+  } catch (err) {
+    const isSrvRefused =
+      err?.code === "ECONNREFUSED" && String(err?.syscall) === "querySrv";
+    if (isSrvRefused) {
+      console.error(
+        "DNS SRV lookup refused. Provide non-SRV seed list in MONGO_URI_SEED or fix DNS."
+      );
+    }
+    console.error(err);
+  }
+})();
 
 // schema with all fields including applyLink
 const JobSchema = new mongoose.Schema({

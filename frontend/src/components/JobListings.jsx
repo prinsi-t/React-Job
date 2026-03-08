@@ -173,10 +173,11 @@ const JobListings = ({ isHome = false }) => {
           )}
 
           {/* Job Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
             {jobs.map((job, index) => (
               <div 
                 key={job._id || job.id}
+                className="h-full"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <JobListing job={job} />

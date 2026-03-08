@@ -71,7 +71,10 @@ const AddJobPage = ({ addJobSubmit}) => {
           <div className="container mx-auto max-w-4xl px-6">
             <div className="modern-card hover-lift animate-fadeInUp">
               <form onSubmit={submitForm}>
-                <h2 className="text-4xl text-center font-bold mb-8 text-white">Add Job</h2>
+                <h2 className="text-4xl text-center font-bold mb-8 text-white">Post a Job </h2>
+                <p className="text-center text-white/80 mb-8">
+                    Get posting, get visibility, get ready to hire 💼
+                </p>
     
                 {/* Grid Layout for Form Fields */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -7,7 +7,7 @@ import Home from "./components/pages/Home";
 import HomePage from "./components/pages/HomePage";
 import Login from "./components/pages/Login";
 import Register from "./components/pages/Register";
-//import ForgotPassword from "./components/pages/ForgotPassword";
+import ForgotPassword from "./components/pages/ForgotPassword";
 import JobsPage from "./components/pages/JobsPage";
 import NotFoundPage from "./components/pages/NotFoundPage";
 import AddJobPage from "./components/pages/AddJobPage";
@@ -46,8 +46,8 @@ const App = () => {
         <Route index element={user ? <HomePage /> : <Home />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
-{/*         <Route path="forgot-password" element={<ForgotPassword />} />
- */}
+        <Route path="forgot-password" element={<ForgotPassword />} />
+
         <Route path="jobs" element={<ProtectedRoute><JobListings /></ProtectedRoute>} />
         <Route path="add-job" element={<ProtectedRoute><AddJobPage addJobSubmit={addJob} /></ProtectedRoute>} />
         <Route path="edit-job/:id" element={<ProtectedRoute><EditJobPage updateJobSubmit={updateJob} /></ProtectedRoute>} />

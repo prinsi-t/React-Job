@@ -8,7 +8,6 @@ const Home = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950 flex flex-col relative overflow-hidden">
 
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=Inter:wght@300;400;500&display=swap');
 
         .hero-title {
           font-family: 'Syne', sans-serif;

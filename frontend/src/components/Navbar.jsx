@@ -136,14 +136,14 @@ const Navbar = () => {
                 >
                   Add Job
                 </NavLink>
-                <div className="pt-4 mt-2 border-t border-white/10">
-                  <button
-                    onClick={handleLogout}
-                    className="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-lg text-base font-semibold transition-all duration-300 active:scale-95 shadow-md"
-                  >
-                    Logout
-                  </button>
-                </div>
+ <div className="pt-4 mt-2 border-t border-white/10">
+  <button
+    onClick={handleLogout}
+    className="block w-full bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-lg text-base font-semibold transition-all duration-300 active:scale-95 shadow-md text-center cursor-pointer"
+  >
+    Logout
+  </button>
+</div>
               </>
             )}
           </div>

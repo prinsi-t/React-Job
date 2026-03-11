@@ -58,13 +58,13 @@ const AddJobPage = ({ addJobSubmit}) => {
         </div>
 
         {/* Back Button */}
-        <section className="relative z-10">
-          <div className="container mx-auto py-6 px-6">
-            <Link to="/jobs" className="text-white hover:text-blue-300 flex items-center transition-colors duration-300">
-              <FaArrowLeft className="mr-2" /> Back to Job Listings
-            </Link>
-          </div>
-        </section>
+         <section className="relative z-10">
+                 <div className="container mx-auto py-6 px-6">
+                   <Link to='/jobs' className="text-blue-400 hover:text-blue-300 flex items-center transition-colors duration-300">
+                     <FaArrowLeft className="mr-2" /> Back to Jobs
+                   </Link>
+                 </div>
+               </section>
 
         {/* Form Section */}
         <section className="relative z-10 pb-16">

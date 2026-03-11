@@ -1,39 +1,24 @@
 import dotenv from "dotenv";
-import path from "path";
-import { fileURLToPath } from "url";
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import axios from "axios";
 import bcrypt from "bcryptjs";
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-dotenv.config({ path: path.join(__dirname, ".env") });
+dotenv.config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const pickMongoUri = () => {
-  if (process.env.MONGO_URI) return process.env.MONGO_URI.trim();
-};
+// Initialize Resend
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-const mongoUri = pickMongoUri();
-
-(async () => {
-  try {
-    if (!mongoUri) {
-      throw new Error("Missing MONGO_URI or MONGO_URI_SEED");
-    }
-    await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 10000 });
-    console.log("MongoDB Connected");
-  } catch (err) {
-    console.error("MongoDB connection failed:", err.message);
-    process.exit(1);
-  }
-})();
+// connect mongo
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB Connected"))
+  .catch(err => console.log(err));
 
 // schema with all fields including applyLink
 const JobSchema = new mongoose.Schema({
@@ -72,14 +57,6 @@ const UserSchema = new mongoose.Schema({
 const User = mongoose.model("User", UserSchema);
 
 let adzunaCache = {};
-
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD,
-  },
-});
 
 app.get("/", (req, res) => {
   res.send("Jobs API is running 🚀");
@@ -137,7 +114,7 @@ app.post("/api/auth/login", async (req, res) => {
   }
 });
 
-// ===== FORGOT PASSWORD ROUTES (NO EMAIL NEEDED FOR TESTING) =====
+// ===== FORGOT PASSWORD ROUTES =====
 
 // Step 1: Request OTP
 app.post("/api/auth/forgot-password", async (req, res) => {
@@ -161,40 +138,30 @@ app.post("/api/auth/forgot-password", async (req, res) => {
     user.resetOTPExpiry = new Date(Date.now() + 10 * 60 * 1000);
     await user.save();
 
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD) {
-      return res.status(500).json({ message: "Email service not configured" });
+    // Send OTP via Resend
+    try {
+      await resend.emails.send({
+  from: 'ReactJobs <onboarding@resend.dev>',
+  to: email,
+  subject: 'Password Reset OTP',
+  html: `<h1>${otp}</h1><p>Expires in 10 minutes</p>`
+});
+
+      console.log(`✅ OTP sent to ${email}: ${otp}`);
+      
+      res.json({
+        success: true,
+        message: "OTP sent to your email. Please check your inbox."
+      });
+    } catch (emailError) {
+      console.error("Email send error:", emailError);
+      res.status(500).json({ 
+        message: "Failed to send email. Please try again." 
+      });
     }
-
-    await transporter.sendMail({
-      from: `ReactJobs <${process.env.EMAIL_USER}>`,
-      to: email,
-      subject: "Password Reset OTP - ReactJobs",
-      html: `
-        <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4;">
-          <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 10px;">
-            <h2 style="color: #2563eb;">Password Reset Request</h2>
-            <p>Hello,</p>
-            <p>You requested to reset your password. Use the OTP below to proceed:</p>
-            <div style="background-color: #eff6ff; padding: 20px; text-align: center; margin: 20px 0; border-radius: 8px;">
-              <h1 style="color: #2563eb; font-size: 32px; letter-spacing: 5px; margin: 0;">${otp}</h1>
-            </div>
-            <p><strong>This OTP will expire in 10 minutes.</strong></p>
-            <p>If you didn't request this, please ignore this email.</p>
-            <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;">
-            <p style="color: #6b7280; font-size: 12px;">ReactJobs.com - Your Job Portal</p>
-          </div>
-        </div>
-      `,
-    });
-
-    res.json({
-      success: true,
-      message: "OTP sent to your email",
-    });
   } catch (err) {
-    const details = err?.response?.data?.message || err?.message || "Failed to send OTP";
-    console.error("Forgot password error:", details);
-    res.status(500).json({ message: details });
+    console.error("Forgot password error:", err);
+    res.status(500).json({ message: err.message || "Failed to send OTP" });
   }
 });
 

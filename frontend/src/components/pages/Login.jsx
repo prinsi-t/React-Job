@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { FaTwitter, FaYoutube, FaFacebook, FaEye, FaEyeSlash } from "react-icons/fa";
@@ -15,6 +15,11 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const currentYear = new Date().getFullYear();
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+  // Scroll to top when component loads
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const validateEmail = (email) => {
     if (!email) return "Email is required";
@@ -81,19 +86,25 @@ const Login = () => {
       }
 
       login(data);
-      navigate("/", { replace: true });
+      
+      // Scroll to top BEFORE navigating
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      
+      // Small delay to ensure scroll happens
+      setTimeout(() => {
+        navigate("/", { replace: true });
+      }, 50);
     } catch {
       setSubmitError("Network error. Please try again.");
       setIsLoading(false);
     }
   };
 
-  const isEmailValid = email && validateEmail(email) === "";
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950 flex flex-col relative overflow-hidden">
       
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap');
         
         .login-title {
           font-family: 'Playfair Display', serif;
@@ -123,7 +134,7 @@ const Login = () => {
         <div className="modern-card max-w-lg w-full hover-lift animate-fadeInUp px-8 md:px-10">
           
           {/* Title with different font */}
-          <h2 className="login-title text-4xl font-bold mb-3 text-white text-center bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+          <h2 className="login-title text-5xl font-bold mb-3 text-white text-center bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
             Log In
           </h2>
 
@@ -216,7 +227,7 @@ const Login = () => {
             >
               {isLoading ? (
                 <span className="flex items-center justify-center">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <svg className="animate-spin -ml-1 mr-3 h-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>

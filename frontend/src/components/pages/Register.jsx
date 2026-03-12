@@ -14,7 +14,7 @@ const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const currentYear = new Date().getFullYear();
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+  const API_URL = import.meta.env.VITE_API_URL || "";
 
   const calculatePasswordStrength = (password) => {
     let strength = 0;

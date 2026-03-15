@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom';
-import { FaArrowLeft} from 'react-icons/fa'
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa'
 import { toast } from 'react-toastify'
 import { useAuth } from '../../context/AuthContext';
 
@@ -51,84 +51,101 @@ const AddJobPage = ({ addJobSubmit}) => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950 relative overflow-hidden">
         
-        {/* Floating Background Elements */}
-        <div className="fixed inset-0 pointer-events-none z-0">
-          <div className="absolute top-20 left-10 w-96 h-96 bg-blue-900/20 rounded-full blur-3xl animate-float"></div>
-          <div className="absolute bottom-20 right-10 w-[500px] h-[500px] bg-blue-800/15 rounded-full blur-3xl animate-float animation-delay-400"></div>
+        {/* Background orbs */}
+        <div className="absolute inset-0 pointer-events-none z-0">
+          <div className="absolute top-20 left-10 w-96 h-96 bg-blue-900/20 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-40 right-10 w-[500px] h-[500px] bg-blue-800/10 rounded-full blur-3xl"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-indigo-900/10 rounded-full blur-3xl"></div>
         </div>
 
         {/* Back Button */}
-         <section className="relative z-10">
-                 <div className="container mx-auto py-6 px-6">
-                   <Link to='/jobs' className="text-blue-400 hover:text-blue-300 flex items-center transition-colors duration-300">
-                     <FaArrowLeft className="mr-2" /> Back to Jobs
-                   </Link>
-                 </div>
-               </section>
+        <div className="relative z-10 container mx-auto px-6 pt-8">
+          <Link to='/jobs' className="inline-flex items-center text-blue-400 hover:text-blue-300 transition-colors duration-300 text-sm font-medium">
+            <FaArrowLeft className="mr-2" /> Back to Jobs
+          </Link>
+        </div>
 
         {/* Form Section */}
-        <section className="relative z-10 pb-16">
-          <div className="container mx-auto max-w-4xl px-6">
-            <div className="modern-card hover-lift animate-fadeInUp">
+        <section className="relative z-10 py-12 px-6">
+          <div className="container mx-auto max-w-2xl">
+            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-8 shadow-2xl">
               <form onSubmit={submitForm}>
-                <h2 className="text-4xl text-center font-bold mb-8 text-white">Post a Job </h2>
-                <p className="text-center text-white/80 mb-8">
-                    Get posting, get visibility, get ready to hire 💼
+                <h2 className="text-3xl text-center font-bold mb-2 text-white tracking-tight">Post a Job</h2>
+                <p className="text-center text-slate-300 mb-8">
+                  Get posting, get visibility, get ready to hire 💼
                 </p>
     
                 {/* Grid Layout for Form Fields */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-5">
                   
-                  {/* Job Type */}
+                  {/* Job Title */}
                   <div>
-                    <label htmlFor="type" className="block text-white font-semibold mb-2">
-                      Job Type
+                    <label htmlFor="title" className="block text-sm font-medium text-slate-300 mb-2">
+                      Job Title
                     </label>
-                    <select
-                      id="type"
-                      name="type"
-                      className="bg-white/10 border border-white/20 text-white rounded-lg w-full py-3 px-4 focus:outline-none focus:border-blue-500 transition-all duration-300"
+                    <input
+                      type="text"
+                      id="title"
+                      name="title"
+                      className="w-full bg-white/10 border border-white/20 text-white placeholder-slate-400 px-4 py-3 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-300"
+                      placeholder="e.g. Senior React Developer"
                       required
-                      value={type}
-                      onChange={(e) => setType(e.target.value)}
-                    >
-                      <option value="Full-Time" className="bg-slate-900">Full-Time</option>
-                      <option value="Part-Time" className="bg-slate-900">Part-Time</option>
-                      <option value="Remote" className="bg-slate-900">Remote</option>
-                      <option value="Contract" className="bg-slate-900">Contract</option>
-                      <option value="Internship" className="bg-slate-900">Internship</option> 
-                    </select>
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                    />
                   </div>
 
-                  {/* Contract Type */}
-                  <div>
-                    <label htmlFor="contractType" className="block text-white font-semibold mb-2">
-                      Contract Type
-                    </label>
-                    <select
-                      id="contractType"
-                      name="contractType"
-                      className="bg-white/10 border border-white/20 text-white rounded-lg w-full py-3 px-4 focus:outline-none focus:border-blue-500 transition-all duration-300"
-                      required
-                      value={contractType}
-                      onChange={(e) => setContractType(e.target.value)}
-                    >
-                      <option value="Permanent" className="bg-slate-900">Permanent</option>
-                      <option value="Temporary" className="bg-slate-900">Temporary</option>
-                      <option value="Contract" className="bg-slate-900">Contract</option>
-                      <option value="Freelance" className="bg-slate-900">Freelance</option>
-                    </select>
+                  {/* Job Type & Contract Type */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label htmlFor="type" className="block text-sm font-medium text-slate-300 mb-2">
+                        Job Type
+                      </label>
+                      <select
+                        id="type"
+                        name="type"
+                        className="w-full bg-white/10 border border-white/20 text-white rounded-lg py-3 px-4 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-300"
+                        required
+                        value={type}
+                        onChange={(e) => setType(e.target.value)}
+                      >
+                        <option value="Full-Time" className="bg-slate-900">Full-Time</option>
+                        <option value="Part-Time" className="bg-slate-900">Part-Time</option>
+                        <option value="Remote" className="bg-slate-900">Remote</option>
+                        <option value="Contract" className="bg-slate-900">Contract</option>
+                        <option value="Internship" className="bg-slate-900">Internship</option> 
+                      </select>
+                    </div>
+
+                    <div>
+                      <label htmlFor="contractType" className="block text-sm font-medium text-slate-300 mb-2">
+                        Contract Type
+                      </label>
+                      <select
+                        id="contractType"
+                        name="contractType"
+                        className="w-full bg-white/10 border border-white/20 text-white rounded-lg py-3 px-4 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-300"
+                        required
+                        value={contractType}
+                        onChange={(e) => setContractType(e.target.value)}
+                      >
+                        <option value="Permanent" className="bg-slate-900">Permanent</option>
+                        <option value="Temporary" className="bg-slate-900">Temporary</option>
+                        <option value="Contract" className="bg-slate-900">Contract</option>
+                        <option value="Freelance" className="bg-slate-900">Freelance</option>
+                      </select>
+                    </div>
                   </div>
 
                   {/* Category */}
-                  <div className="md:col-span-2">
-                    <label htmlFor="category" className="block text-white font-semibold mb-2">
+                  <div>
+                    <label htmlFor="category" className="block text-sm font-medium text-slate-300 mb-2">
                       Category
                     </label>
                     <select
                       id="category"
                       name="category"
-                      className="bg-white/10 border border-white/20 text-white rounded-lg w-full py-3 px-4 focus:outline-none focus:border-blue-500 transition-all duration-300"
+                      className="w-full bg-white/10 border border-white/20 text-white rounded-lg py-3 px-4 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-300"
                       required
                       value={category}
                       onChange={(e) => setCategory(e.target.value)}
@@ -152,95 +169,79 @@ const AddJobPage = ({ addJobSubmit}) => {
                       <option value="Other" className="bg-slate-900">Other</option>
                     </select>
                   </div>
-    
-                  {/* Job Title */}
-                  <div className="md:col-span-2">
-                    <label className="block text-white font-semibold mb-2">
-                      Job Title
-                    </label>
-                    <input
-                      type="text"
-                      id="title"
-                      name="title"
-                      className="bg-white/10 border border-white/20 text-white placeholder-gray-400 rounded-lg w-full py-3 px-4 focus:outline-none focus:border-blue-500 transition-all duration-300"
-                      placeholder="eg. Senior React Developer"
-                      required
-                      value={title}
-                      onChange={(e) => setTitle(e.target.value)}
-                    />
-                  </div>
 
-                  {/* Description */}
-                  <div className="md:col-span-2">
-                    <label htmlFor="description" className="block text-white font-semibold mb-2">
-                      Description
+                  {/* Job Description */}
+                  <div>
+                    <label htmlFor="description" className="block text-sm font-medium text-slate-300 mb-2">
+                      Job Description
                     </label>
                     <textarea
                       id="description"
                       name="description"
-                      className="bg-white/10 border border-white/20 text-white placeholder-gray-400 rounded-lg w-full py-3 px-4 focus:outline-none focus:border-blue-500 transition-all duration-300"
-                      rows="4"
-                      placeholder="Add any job duties, expectations, requirements, etc"
+                      className="w-full bg-white/10 border border-white/20 text-white placeholder-slate-400 rounded-lg py-3 px-4 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-300"
+                      rows="5"
+                      placeholder="Describe the role, responsibilities, and requirements..."
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
                     ></textarea>
                   </div>
     
-                  {/* Salary */}
-                  <div>
-                    <label htmlFor="salary" className="block text-white font-semibold mb-2">
-                      Salary
-                    </label>
-                    <select
-                      id="salary"
-                      name="salary"
-                      className="bg-white/10 border border-white/20 text-white rounded-lg w-full py-3 px-4 focus:outline-none focus:border-blue-500 transition-all duration-300"
-                      required
-                      value={salary}
-                      onChange={(e) => setSalary(e.target.value)}
-                    >
-                      <option value="Under $50K" className="bg-slate-900">Under $50K</option>
-                      <option value="$50K - 60K" className="bg-slate-900">$50K - $60K</option>
-                      <option value="$60K - 70K" className="bg-slate-900">$60K - $70K</option>
-                      <option value="$70K - 80K" className="bg-slate-900">$70K - $80K</option>
-                      <option value="$80K - 90K" className="bg-slate-900">$80K - $90K</option>
-                      <option value="$90K - 100K" className="bg-slate-900">$90K - $100K</option>
-                      <option value="$100K - 125K" className="bg-slate-900">$100K - $125K</option>
-                      <option value="$125K - 150K" className="bg-slate-900">$125K - $150K</option>
-                      <option value="$150K - 175K" className="bg-slate-900">$150K - $175K</option>
-                      <option value="$175K - 200K" className="bg-slate-900">$175K - $200K</option>
-                      <option value="Over $200K" className="bg-slate-900">Over $200K</option>
-                      <option value="Not Disclosed" className="bg-slate-900">Not Disclosed</option>
-                    </select>
-                  </div>
+                  {/* Salary & Location */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label htmlFor="salary" className="block text-sm font-medium text-slate-300 mb-2">
+                        Salary
+                      </label>
+                      <select
+                        id="salary"
+                        name="salary"
+                        className="w-full bg-white/10 border border-white/20 text-white rounded-lg py-3 px-4 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-300"
+                        required
+                        value={salary}
+                        onChange={(e) => setSalary(e.target.value)}
+                      >
+                        <option value="Under $50K" className="bg-slate-900">Under $50K</option>
+                        <option value="$50K - 60K" className="bg-slate-900">$50K - $60K</option>
+                        <option value="$60K - 70K" className="bg-slate-900">$60K - $70K</option>
+                        <option value="$70K - 80K" className="bg-slate-900">$70K - $80K</option>
+                        <option value="$80K - 90K" className="bg-slate-900">$80K - $90K</option>
+                        <option value="$90K - 100K" className="bg-slate-900">$90K - $100K</option>
+                        <option value="$100K - 125K" className="bg-slate-900">$100K - $125K</option>
+                        <option value="$125K - 150K" className="bg-slate-900">$125K - $150K</option>
+                        <option value="$150K - 175K" className="bg-slate-900">$150K - $175K</option>
+                        <option value="$175K - 200K" className="bg-slate-900">$175K - $200K</option>
+                        <option value="Over $200K" className="bg-slate-900">Over $200K</option>
+                        <option value="Not Disclosed" className="bg-slate-900">Not Disclosed</option>
+                      </select>
+                    </div>
 
-                  {/* Location */}
-                  <div>
-                    <label className="block text-white font-semibold mb-2">
-                      Location
-                    </label>
-                    <input
-                      type="text"
-                      id="location"
-                      name="location"
-                      className="bg-white/10 border border-white/20 text-white placeholder-gray-400 rounded-lg w-full py-3 px-4 focus:outline-none focus:border-blue-500 transition-all duration-300"
-                      placeholder="Company Location"
-                      required           
-                      value={location}
-                      onChange={(e) => setLocation(e.target.value)}
-                    />
+                    <div>
+                      <label htmlFor="location" className="block text-sm font-medium text-slate-300 mb-2">
+                        Location
+                      </label>
+                      <input
+                        type="text"
+                        id="location"
+                        name="location"
+                        className="w-full bg-white/10 border border-white/20 text-white placeholder-slate-400 rounded-lg py-3 px-4 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-300"
+                        placeholder="e.g. New York, NY"
+                        required           
+                        value={location}
+                        onChange={(e) => setLocation(e.target.value)}
+                      />
+                    </div>
                   </div>
 
                   {/* Application Link */}
-                  <div className="md:col-span-2">
-                    <label className="block text-white font-semibold mb-2">
-                      Application Link <span className="text-gray-400 text-sm">(Optional)</span>
+                  <div>
+                    <label htmlFor="applyLink" className="block text-sm font-medium text-slate-300 mb-2">
+                      Application Link <span className="text-slate-400 text-xs">(Optional)</span>
                     </label>
                     <input
                       type="url"
                       id="applyLink"
                       name="applyLink"
-                      className="bg-white/10 border border-white/20 text-white placeholder-gray-400 rounded-lg w-full py-3 px-4 focus:outline-none focus:border-blue-500 transition-all duration-300"
+                      className="w-full bg-white/10 border border-white/20 text-white placeholder-slate-400 rounded-lg py-3 px-4 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-300"
                       placeholder="https://company.com/apply or mailto:jobs@company.com"
                       value={applyLink}
                       onChange={(e) => setApplyLink(e.target.value)}
@@ -249,20 +250,20 @@ const AddJobPage = ({ addJobSubmit}) => {
                 </div>
     
                 {/* Company Info Section */}
-                <h3 className="text-2xl font-bold mt-10 mb-6 text-white border-t border-white/10 pt-8">Company Info</h3>
+                <h3 className="text-xl font-bold mt-8 mb-5 text-white border-t border-white/10 pt-6">Company Info</h3>
     
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-5">
                   
                   {/* Company Name */}
-                  <div className="md:col-span-2">
-                    <label htmlFor="company" className="block text-white font-semibold mb-2">
+                  <div>
+                    <label htmlFor="company" className="block text-sm font-medium text-slate-300 mb-2">
                       Company Name
                     </label>
                     <input
                       type="text"
                       id="company"
                       name="company"
-                      className="bg-white/10 border border-white/20 text-white placeholder-gray-400 rounded-lg w-full py-3 px-4 focus:outline-none focus:border-blue-500 transition-all duration-300"
+                      className="w-full bg-white/10 border border-white/20 text-white placeholder-slate-400 rounded-lg py-3 px-4 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-300"
                       placeholder="Company Name"
                       value={companyName}
                       onChange={(e) => setCompanyName(e.target.value)}
@@ -270,14 +271,14 @@ const AddJobPage = ({ addJobSubmit}) => {
                   </div>
     
                   {/* Company Description */}
-                  <div className="md:col-span-2">
-                    <label htmlFor="company_description" className="block text-white font-semibold mb-2">
+                  <div>
+                    <label htmlFor="company_description" className="block text-sm font-medium text-slate-300 mb-2">
                       Company Description
                     </label>
                     <textarea
                       id="company_description"
                       name="company_description"
-                      className="bg-white/10 border border-white/20 text-white placeholder-gray-400 rounded-lg w-full py-3 px-4 focus:outline-none focus:border-blue-500 transition-all duration-300"
+                      className="w-full bg-white/10 border border-white/20 text-white placeholder-slate-400 rounded-lg py-3 px-4 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-300"
                       rows="4"
                       placeholder="What does your company do?"
                       value={companyDescription}
@@ -285,44 +286,45 @@ const AddJobPage = ({ addJobSubmit}) => {
                     ></textarea>
                   </div>
     
-                  {/* Contact Email */}
-                  <div>
-                    <label htmlFor="contact_email" className="block text-white font-semibold mb-2">
-                      Contact Email
-                    </label>
-                    <input
-                      type="email"
-                      id="contact_email"
-                      name="contact_email"
-                      className="bg-white/10 border border-white/20 text-white placeholder-gray-400 rounded-lg w-full py-3 px-4 focus:outline-none focus:border-blue-500 transition-all duration-300"
-                      placeholder="Email address for applicants"
-                      required
-                      value={contactEmail}
-                      onChange={(e) => setContactEmail(e.target.value)}
-                    />
-                  </div>
+                  {/* Contact Email & Phone */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label htmlFor="contact_email" className="block text-sm font-medium text-slate-300 mb-2">
+                        Contact Email
+                      </label>
+                      <input
+                        type="email"
+                        id="contact_email"
+                        name="contact_email"
+                        className="w-full bg-white/10 border border-white/20 text-white placeholder-slate-400 rounded-lg py-3 px-4 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-300"
+                        placeholder="jobs@company.com"
+                        required
+                        value={contactEmail}
+                        onChange={(e) => setContactEmail(e.target.value)}
+                      />
+                    </div>
 
-                  {/* Contact Phone */}
-                  <div>
-                    <label htmlFor="contact_phone" className="block text-white font-semibold mb-2">
-                      Contact Phone
-                    </label>
-                    <input
-                      type="tel"
-                      id="contact_phone"
-                      name="contact_phone"
-                      className="bg-white/10 border border-white/20 text-white placeholder-gray-400 rounded-lg w-full py-3 px-4 focus:outline-none focus:border-blue-500 transition-all duration-300"
-                      placeholder="Optional phone for applicants"
-                      value={contactPhone}
-                      onChange={(e) => setContactPhone(e.target.value)}
-                    />
+                    <div>
+                      <label htmlFor="contact_phone" className="block text-sm font-medium text-slate-300 mb-2">
+                        Contact Phone
+                      </label>
+                      <input
+                        type="tel"
+                        id="contact_phone"
+                        name="contact_phone"
+                        className="w-full bg-white/10 border border-white/20 text-white placeholder-slate-400 rounded-lg py-3 px-4 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-300"
+                        placeholder="(555) 123-4567"
+                        value={contactPhone}
+                        onChange={(e) => setContactPhone(e.target.value)}
+                      />
+                    </div>
                   </div>
                 </div>
     
                 {/* Submit Button */}
                 <div className="mt-8">
                   <button
-                    className="btn-modern cursor-pointer bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-800 hover:to-blue-900 text-white font-bold py-4 px-8 rounded-lg w-full focus:outline-none hover-lift shadow-2xl transition-all duration-300"
+                    className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3.5 rounded-lg font-semibold text-base shadow-lg cursor-pointer hover:-translate-y-0.5 transition-transform duration-200 flex items-center justify-center gap-2"
                     type="submit"
                   >
                     Add Job

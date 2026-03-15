@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { FaTwitter, FaYoutube, FaFacebook, FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaTwitter, FaYoutube, FaFacebook, FaEye, FaEyeSlash, FaArrowRight } from "react-icons/fa";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -13,10 +13,10 @@ const Login = () => {
   const [submitError, setSubmitError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("Logging in...");
   const currentYear = new Date().getFullYear();
   const API_URL = import.meta.env.VITE_API_URL || "";
 
-  // Scroll to top when component loads
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -70,6 +70,11 @@ const Login = () => {
     setPasswordError("");
     setSubmitError("");
     setIsLoading(true);
+    setLoadingMessage("Logging in...");
+
+    const messageTimer = setTimeout(() => {
+      setLoadingMessage("Server is waking up... (first login takes ~30 seconds)");
+    }, 3000);
 
     try {
       const res = await fetch(`${API_URL}/api/auth/login`, {
@@ -77,6 +82,9 @@ const Login = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
+
+      clearTimeout(messageTimer);
+      
       const data = await res.json();
 
       if (!res.ok) {
@@ -86,15 +94,12 @@ const Login = () => {
       }
 
       login(data);
-      
-      // Scroll to top BEFORE navigating
       window.scrollTo({ top: 0, behavior: 'instant' });
-      
-      // Small delay to ensure scroll happens
       setTimeout(() => {
         navigate("/", { replace: true });
       }, 50);
-    } catch {
+    } catch (error) {
+      clearTimeout(messageTimer);
       setSubmitError("Network error. Please try again.");
       setIsLoading(false);
     }
@@ -103,58 +108,80 @@ const Login = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950 flex flex-col relative overflow-hidden">
       
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap');
-        
-        .login-title {
-          font-family: 'Playfair Display', serif;
-          font-weight: 700;
-          letter-spacing: -0.02em;
-        }
+      {/* Animated Gradient Mesh Background */}
+      <div className="absolute inset-0 pointer-events-none z-0 opacity-60">
+        <div className="absolute top-0 -left-4 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+        <div className="absolute top-0 -right-4 w-72 h-72 bg-yellow-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
+        <div className="absolute bottom-0 right-20 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-6000"></div>
+      </div>
 
-        input:-webkit-autofill,
-        input:-webkit-autofill:hover,
-        input:-webkit-autofill:focus,
-        input:-webkit-autofill:active {
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: #ffffff;
-          transition: background-color 5000s ease-in-out 0s;
-          box-shadow: inset 0 0 20px 20px rgba(255, 255, 255, 0.1);
+      {/* Static orbs for depth */}
+      <div className="absolute inset-0 pointer-events-none z-0">
+        <div className="absolute top-20 left-10 w-96 h-96 bg-blue-900/20 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-40 right-10 w-[500px] h-[500px] bg-blue-800/10 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-indigo-900/10 rounded-full blur-3xl"></div>
+      </div>
+
+      <style>{`
+        @keyframes blob {
+          0%, 100% {
+            transform: translate(0px, 0px) scale(1);
+          }
+          33% {
+            transform: translate(30px, -50px) scale(1.1);
+          }
+          66% {
+            transform: translate(-20px, 20px) scale(0.9);
+          }
+        }
+        .animate-blob {
+          animation: blob 7s infinite;
+        }
+        .animation-delay-2000 {
+          animation-delay: 2s;
+        }
+        .animation-delay-4000 {
+          animation-delay: 4s;
+        }
+        .animation-delay-6000 {
+          animation-delay: 6s;
         }
       `}</style>
 
-      {/* Floating Background Elements */}
-      <div className="absolute inset-0 pointer-events-none z-0">
-        <div className="absolute top-20 left-10 w-96 h-96 bg-blue-900/20 rounded-full blur-3xl animate-float"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-700/10 rounded-full blur-3xl animate-float animation-delay-600"></div>
+      {/* Back to Home */}
+      <div className="relative z-10 container mx-auto px-6 pt-8">
+        <Link to="/" className="inline-flex items-center text-blue-400 hover:text-blue-300 transition-colors duration-300 text-sm font-medium">
+          <span className="mr-2">←</span> Back to Home
+        </Link>
       </div>
 
       {/* Login Form */}
-      <div className="flex-grow flex items-center justify-center px-6 py-20 relative z-10">
-        <div className="modern-card max-w-lg w-full hover-lift animate-fadeInUp px-8 md:px-10">
+      <div className="flex-grow flex items-center justify-center px-6 py-12 relative z-10">
+        <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-8 w-full max-w-md shadow-2xl">
           
-          {/* Title with different font */}
-          <h2 className="login-title text-5xl font-bold mb-3 text-white text-center bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+          {/* Title */}
+          <h2 className="text-4xl font-bold mb-2 text-white text-center tracking-tight">
             Log In
           </h2>
 
-          {/* Welcome message */}
-          <p className="text-base mb-8 text-gray-300 text-center leading-relaxed">
+          {/* Subtitle */}
+          <p className="text-base mb-8 text-slate-300 text-center">
             👋 Welcome back! Log in to access your account and explore new opportunities.
           </p>
 
-          <form onSubmit={handleSubmit} className="space-y-5 max-w-sm mx-auto">
+          <form onSubmit={handleSubmit} className="space-y-5">
             
             {/* Email */}
             <div>
-              <label className="block text-sm font-semibold text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-slate-300 mb-2">
                 Email Address
               </label>
               <input
                 name="email"
                 type="email"
-                placeholder="your.email@example.com"
-                className="w-full bg-white/10 border border-white/20 text-white placeholder-gray-500 p-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300"
+                placeholder="you@example.com"
+                className="w-full bg-white/10 border border-white/20 text-white placeholder-slate-400 px-4 py-3 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-300"
                 value={email}
                 onChange={handleEmailChange}
                 required
@@ -167,9 +194,9 @@ const Login = () => {
               )}
             </div>
 
-            {/* Password with show/hide */}
+            {/* Password */}
             <div>
-              <label className="block text-sm font-semibold text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-slate-300 mb-2">
                 Password
               </label>
               <div className="relative">
@@ -179,14 +206,14 @@ const Login = () => {
                   placeholder="Enter your password"
                   value={password}
                   onChange={handlePasswordChange}
-                  className="w-full bg-white/10 border border-white/20 text-white placeholder-gray-500 p-3 pr-12 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300"
+                  className="w-full bg-white/10 border border-white/20 text-white placeholder-slate-400 px-4 py-3 pr-12 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 transition-all duration-300"
                   required
                   disabled={isLoading}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors duration-300 p-1"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors duration-300 p-1"
                   disabled={isLoading}
                 >
                   {showPassword ? (
@@ -202,7 +229,7 @@ const Login = () => {
                 </p>
               )}
               
-              {/* Forgot Password Link */}
+              {/* Forgot Password */}
               <div className="text-right mt-2">
                 <Link to="/forgot-password" className="text-sm text-blue-400 hover:text-blue-300 transition-colors duration-300">
                   Forgot password?
@@ -222,47 +249,52 @@ const Login = () => {
             {/* Submit Button */}
             <button 
               type="submit"
-              className="btn-modern cursor-pointer w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white py-3.5 rounded-lg font-bold text-lg hover-lift transition-all duration-300 shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3.5 rounded-lg font-semibold text-base shadow-lg disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer hover:-translate-y-0.5 transition-transform duration-200 flex items-center justify-center gap-2"
               disabled={isLoading}
             >
               {isLoading ? (
                 <span className="flex items-center justify-center">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  Logging in...
+                  {loadingMessage}
                 </span>
               ) : (
-                "Log In →"
+                <>
+                  Log In
+                  <FaArrowRight className="w-4 h-4" />
+                </>
               )}
             </button>
+
+            {/* Loading Helper Message */}
+            {isLoading && (
+              <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3 mt-3">
+                <p className="text-blue-300 text-xs text-center animate-pulse">
+                  ⏱️ First login after inactivity may take up to 30 seconds
+                </p>
+              </div>
+            )}
           </form>
 
           {/* Divider */}
-          <div className="relative my-8">
+          <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-white/10"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-transparent text-gray-400">or</span>
+              <span className="px-4 bg-transparent text-slate-400">or</span>
             </div>
           </div>
 
           {/* Register Link */}
-          <p className="text-center text-gray-400 text-sm">
+          <p className="text-center text-slate-300 text-sm">
             Don't have an account?{" "}
-            <Link to="/register" className="text-blue-400 hover:text-blue-300 font-bold transition-colors duration-300 underline underline-offset-2">
-              Create one now
+            <Link to="/register" className="text-blue-400 hover:text-blue-300 font-semibold transition-colors duration-300">
+              Sign up
             </Link>
           </p>
-
-          {/* Home Link */}
-          <div className="mt-8 pt-6 border-t border-white/10 text-center">
-            <Link to="/" className="text-gray-400 hover:text-blue-400 text-sm transition-colors duration-300 flex items-center justify-center">
-              <span className="mr-2">←</span> Back to Home
-            </Link>
-          </div>
         </div>
       </div>
 
@@ -270,14 +302,14 @@ const Login = () => {
       <footer className="relative mt-auto z-10 bg-gradient-to-br from-slate-950/95 via-blue-950/95 to-slate-950/95 backdrop-blur-sm border-t border-white/10">
         <div className="absolute inset-0 bg-black/40"></div>
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute bottom-10 right-20 w-[400px] h-[400px] bg-blue-800/10 rounded-full blur-3xl animate-float"></div>
+          <div className="absolute bottom-10 right-20 w-[400px] h-[400px] bg-blue-800/10 rounded-full blur-3xl"></div>
         </div>
 
         <div className="relative container mx-auto px-6 py-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             
             {/* Services */}
-            <div className="space-y-3 animate-fadeInUp">
+            <div className="space-y-3">
               <h6 className="text-lg font-semibold text-white mb-4">Services</h6>
               <a href="#" className="block text-white/70 hover:text-blue-400 transition-all duration-300 hover:translate-x-2">Branding</a>
               <a href="#" className="block text-white/70 hover:text-blue-400 transition-all duration-300 hover:translate-x-2">Design</a>
@@ -286,7 +318,7 @@ const Login = () => {
             </div>
 
             {/* Company */}
-            <div className="space-y-3 animate-fadeInUp animation-delay-200">
+            <div className="space-y-3">
               <h6 className="text-lg font-semibold text-white mb-4">Company</h6>
               <a href="#" className="block text-white/70 hover:text-blue-400 transition-all duration-300 hover:translate-x-2">About us</a>
               <Link to="/jobs" className="block text-white/70 hover:text-blue-400 transition-all duration-300 hover:translate-x-2">Jobs</Link>
@@ -295,7 +327,7 @@ const Login = () => {
             </div>
 
             {/* Legal */}
-            <div className="space-y-3 animate-fadeInUp animation-delay-400">
+            <div className="space-y-3">
               <h6 className="text-lg font-semibold text-white mb-4">Legal</h6>
               <a href="#" className="block text-white/70 hover:text-blue-400 transition-all duration-300 hover:translate-x-2">Terms of use</a>
               <a href="#" className="block text-white/70 hover:text-blue-400 transition-all duration-300 hover:translate-x-2">Privacy policy</a>
@@ -303,9 +335,9 @@ const Login = () => {
             </div>
 
             {/* Brand */}
-            <div className="space-y-4 animate-fadeInUp animation-delay-600">
+            <div className="space-y-4">
               <div className="flex items-center space-x-3">
-                <img src="/logo.png" alt="ReactJobs Logo" className="w-10 h-10 object-contain animate-glow" />
+                <img src="/logo.png" alt="ReactJobs Logo" className="w-10 h-10 object-contain" />
                 <span className="text-xl font-bold text-white">ReactJobs.com</span>
               </div>
               <p className="text-white/70 text-sm">Providing reliable tech jobs since {currentYear - 5}</p>
@@ -317,13 +349,13 @@ const Login = () => {
             <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
               <p className="text-white/70 text-sm">© {currentYear} ReactJobs Industries Ltd. All rights reserved.</p>
               <div className="flex space-x-4">
-                <a href="#" className="p-2 bg-white/5 rounded-lg hover:bg-blue-600 transition-all duration-300 hover:scale-110 hover-glow text-white" aria-label="Twitter">
+                <a href="#" className="p-2 bg-white/5 rounded-lg hover:bg-blue-600 transition-all duration-300 hover:scale-110 text-white" aria-label="Twitter">
                   <FaTwitter className="w-5 h-5" />
                 </a>
-                <a href="#" className="p-2 bg-white/5 rounded-lg hover:bg-red-600 transition-all duration-300 hover:scale-110 hover-glow text-white" aria-label="YouTube">
+                <a href="#" className="p-2 bg-white/5 rounded-lg hover:bg-red-600 transition-all duration-300 hover:scale-110 text-white" aria-label="YouTube">
                   <FaYoutube className="w-5 h-5" />
                 </a>
-                <a href="#" className="p-2 bg-white/5 rounded-lg hover:bg-blue-600 transition-all duration-300 hover:scale-110 hover-glow text-white" aria-label="Facebook">
+                <a href="#" className="p-2 bg-white/5 rounded-lg hover:bg-blue-600 transition-all duration-300 hover:scale-110 text-white" aria-label="Facebook">
                   <FaFacebook className="w-5 h-5" />
                 </a>
               </div>

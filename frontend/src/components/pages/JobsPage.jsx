@@ -17,6 +17,7 @@ const JobsPage = () => {
       <section className="bg-blue-50px-4 py-10">
       <JobListings />
       </section>
+      
     </>
    
   )

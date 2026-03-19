@@ -62,7 +62,7 @@ html {
 
 /* ===== MODERN CARD ===== */
 .modern-card {
-  background: linear-gradient(135deg, rgba(30, 27, 75, 0.8) 0%, rgba(15, 23, 42, 0.8) 100%);
+  /* Background removed - handled by Tailwind */
   border: 1px solid rgba(99, 102, 241, 0.2);
   border-radius: 1rem;
   padding: 1.5rem;
@@ -71,6 +71,7 @@ html {
   overflow: hidden;
 }
 
+/* Glass shine effect that slides across on hover */
 .modern-card::before {
   content: '';
   position: absolute;
@@ -80,9 +81,18 @@ html {
   height: 100%;
   background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent);
   transition: left 0.5s;
+  z-index: 1;
 }
 
-.modern-card:hover::before { left: 100%; }
+.modern-card:hover::before { 
+  left: 100%; 
+}
+
+/* Make sure content is above the shine effect */
+.modern-card > * {
+  position: relative;
+  z-index: 2;
+}
 
 .modern-card:hover {
   transform: translateY(-5px);

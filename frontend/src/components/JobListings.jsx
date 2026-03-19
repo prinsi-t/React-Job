@@ -161,7 +161,7 @@ const JobListings = ({ isHome = false }) => {
                   setJobs([]);
                   setHasMore(true);
                 }}
-                className="bg-white/10 border border-white/20 text-white rounded-lg px-6 py-3 focus:outline-none focus:border-blue-500 transition-all duration-300 cursor-pointer backdrop-blur-sm"
+                className="bg-white/20 border border-white/20 text-white rounded-lg px-6 py-3 focus:outline-none  transition-all duration-300 cursor-pointer backdrop-blur-md"
               >
                 <option value="recent" className="bg-slate-900">Recent Jobs</option>
                 <option value="in" className="bg-slate-900">India</option>

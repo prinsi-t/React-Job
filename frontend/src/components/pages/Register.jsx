@@ -177,7 +177,7 @@ const Register = () => {
 
       {/* Back to Home */}
       <div className="relative z-10 container mx-auto px-6 pt-8">
-        <Link to="/" className="inline-flex items-center text-blue-400 hover:text-blue-300 transition-colors duration-300 text-sm font-medium">
+        <Link to="/" className="inline-flex items-center text-blue-400 hover:text-blue-300 transition-colors duration-300 text-md font-medium">
           <span className="mr-2">←</span> Back to Home
         </Link>
       </div>

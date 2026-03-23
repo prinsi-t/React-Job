@@ -143,7 +143,7 @@ const Hero = () => {
 
         {/* Call to action text - LEFT aligned */}
         <p className="text-gray-400 text-base sm:text-lg animate-fadeInUp animation-delay-400 text-left">
-          Find the React job that fits your skills and needs →
+          Find the React job that fits your skills and needs!
         </p>
 
       </div>

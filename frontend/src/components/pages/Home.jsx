@@ -190,6 +190,59 @@ const Home = () => {
           ))}
         </div>
 
+        {/* Logo Slider - Infinite Scroll */}
+        <div className="animate-fadeUp-delay4 w-full max-w-6xl mx-auto mb-24 overflow-hidden">
+          <p className="text-slate-300 text-sm text-center mb-8">Startups who used our platform</p>
+          
+          <div className="relative">
+            {/* Gradient overlays for fade effect */}
+            <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-slate-950 via-blue-950/50 to-transparent z-10"></div>
+            <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-slate-950 via-blue-950/50 to-transparent z-10"></div>
+            
+            {/* Scrolling container */}
+            <div className="flex gap-16 animate-scroll">
+              {/* First set of logos */}
+              <div className="flex gap-16 items-center shrink-0">
+                <div className="text-white/70 hover:text-white transition-colors text-2xl font-bold whitespace-nowrap">🚲 Postmates</div>
+                <div className="text-white/70 hover:text-white transition-colors text-2xl font-bold whitespace-nowrap">⬛ PLAID</div>
+                <div className="text-white/70 hover:text-white transition-colors text-2xl font-bold whitespace-nowrap">📦 Airtable</div>
+                <div className="text-white/70 hover:text-white transition-colors text-2xl font-bold whitespace-nowrap">N nerdwallet</div>
+                <div className="text-white/70 hover:text-white transition-colors text-2xl font-bold whitespace-nowrap">🌿 acorns</div>
+                <div className="text-white/70 hover:text-white transition-colors text-2xl font-bold whitespace-nowrap">💼 Gusto</div>
+              </div>
+              
+              {/* Duplicate set for seamless loop */}
+              <div className="flex gap-16 items-center shrink-0">
+                <div className="text-white/70 hover:text-white transition-colors text-2xl font-bold whitespace-nowrap">🚲 Postmates</div>
+                <div className="text-white/70 hover:text-white transition-colors text-2xl font-bold whitespace-nowrap">⬛ PLAID</div>
+                <div className="text-white/70 hover:text-white transition-colors text-2xl font-bold whitespace-nowrap">📦 Airtable</div>
+                <div className="text-white/70 hover:text-white transition-colors text-2xl font-bold whitespace-nowrap">N nerdwallet</div>
+                <div className="text-white/70 hover:text-white transition-colors text-2xl font-bold whitespace-nowrap">🌿 acorns</div>
+                <div className="text-white/70 hover:text-white transition-colors text-2xl font-bold whitespace-nowrap">💼 Gusto</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <style>{`
+          @keyframes scroll {
+            0% {
+              transform: translateX(0);
+            }
+            100% {
+              transform: translateX(-50%);
+            }
+          }
+          
+          .animate-scroll {
+            animation: scroll 30s linear infinite;
+          }
+          
+          .animate-scroll:hover {
+            animation-play-state: paused;
+          }
+        `}</style>
+
         {/* Testimonial strip */}
         <div className="animate-fadeUp-delay4 max-w-2xl mx-auto text-center mb-8">
           <p className="text-slate-300 text-base italic leading-relaxed">

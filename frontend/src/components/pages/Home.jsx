@@ -159,10 +159,10 @@ const Home = () => {
         </div>
 
         {/* Divider */}
-        <div className="divider-line w-full max-w-3xl h-px mb-30"></div>
+        <div className="divider-line w-full max-w-3xl h-px mb-20"></div>
 
         {/* Feature Cards */}
-        <div className="animate-fadeUp-delay4 grid grid-cols-1 md:grid-cols-3 gap-5 max-w-4xl w-full mx-auto mb-44">
+        <div className="animate-fadeUp-delay4 grid grid-cols-1 md:grid-cols-3 gap-5 max-w-4xl w-full mx-auto mb-24">
           {[
             {
               icon: <FaBriefcase className="w-5 h-5 text-blue-400" />,
@@ -191,30 +191,30 @@ const Home = () => {
         </div>
 
         {/* Logo Slider - Infinite Scroll */}
-        <div className="animate-fadeUp-delay4 w-full max-w-6xl mx-auto mb-34 overflow-hidden">
+        <div className="animate-fadeUp-delay4 w-full max-w-6xl mx-auto mb-24 overflow-hidden">
           <p className="text-slate-300 text-sm text-center mb-8">Startups who used our platform</p>
           
           <div className="relative">
             {/* Scrolling container */}
-            <div className="flex gap-20 animate-scroll">
+            <div className="flex gap-8 md:gap-20 animate-scroll-mobile md:animate-scroll">
               {/* First set of logos */}
-              <div className="flex gap-20 items-center shrink-0">
-                <div className="text-white/70 hover:text-white transition-colors text-3xl font-bold whitespace-nowrap">🚲 Postmates</div>
-                <div className="text-white/70 hover:text-white transition-colors text-3xl font-bold whitespace-nowrap">⬛ PLAID</div>
-                <div className="text-white/70 hover:text-white transition-colors text-3xl font-bold whitespace-nowrap">📦 Airtable</div>
-                <div className="text-white/70 hover:text-white transition-colors text-3xl font-bold whitespace-nowrap">N nerdwallet</div>
-                <div className="text-white/70 hover:text-white transition-colors text-3xl font-bold whitespace-nowrap">🌿 acorns</div>
-                <div className="text-white/70 hover:text-white transition-colors text-3xl font-bold whitespace-nowrap">💼 Gusto</div>
+              <div className="flex gap-8 md:gap-20 items-center shrink-0">
+                <div className="text-white/70 hover:text-white transition-colors text-2xl md:text-3xl font-bold whitespace-nowrap">🚲 Postmates</div>
+                <div className="text-white/70 hover:text-white transition-colors text-2xl md:text-3xl font-bold whitespace-nowrap">⬛ PLAID</div>
+                <div className="text-white/70 hover:text-white transition-colors text-2xl md:text-3xl font-bold whitespace-nowrap">📦 Airtable</div>
+                <div className="text-white/70 hover:text-white transition-colors text-2xl md:text-3xl font-bold whitespace-nowrap">N nerdwallet</div>
+                <div className="text-white/70 hover:text-white transition-colors text-2xl md:text-3xl font-bold whitespace-nowrap">🌿 acorns</div>
+                <div className="text-white/70 hover:text-white transition-colors text-2xl md:text-3xl font-bold whitespace-nowrap">💼 Gusto</div>
               </div>
               
               {/* Duplicate set for seamless loop */}
-              <div className="flex gap-20 items-center shrink-0">
-                <div className="text-white/70 hover:text-white transition-colors text-3xl font-bold whitespace-nowrap">🚲 Postmates</div>
-                <div className="text-white/70 hover:text-white transition-colors text-3xl font-bold whitespace-nowrap">⬛ PLAID</div>
-                <div className="text-white/70 hover:text-white transition-colors text-3xl font-bold whitespace-nowrap">📦 Airtable</div>
-                <div className="text-white/70 hover:text-white transition-colors text-3xl font-bold whitespace-nowrap">N nerdwallet</div>
-                <div className="text-white/70 hover:text-white transition-colors text-3xl font-bold whitespace-nowrap">🌿 acorns</div>
-                <div className="text-white/70 hover:text-white transition-colors text-3xl font-bold whitespace-nowrap">💼 Gusto</div>
+              <div className="flex gap-8 md:gap-20 items-center shrink-0">
+                <div className="text-white/70 hover:text-white transition-colors text-2xl md:text-3xl font-bold whitespace-nowrap">🚲 Postmates</div>
+                <div className="text-white/70 hover:text-white transition-colors text-2xl md:text-3xl font-bold whitespace-nowrap">⬛ PLAID</div>
+                <div className="text-white/70 hover:text-white transition-colors text-2xl md:text-3xl font-bold whitespace-nowrap">📦 Airtable</div>
+                <div className="text-white/70 hover:text-white transition-colors text-2xl md:text-3xl font-bold whitespace-nowrap">N nerdwallet</div>
+                <div className="text-white/70 hover:text-white transition-colors text-2xl md:text-3xl font-bold whitespace-nowrap">🌿 acorns</div>
+                <div className="text-white/70 hover:text-white transition-colors text-2xl md:text-3xl font-bold whitespace-nowrap">💼 Gusto</div>
               </div>
             </div>
           </div>
@@ -230,11 +230,25 @@ const Home = () => {
             }
           }
           
+          @keyframes scroll-mobile {
+            0% {
+              transform: translateX(0);
+            }
+            100% {
+              transform: translateX(-50%);
+            }
+          }
+          
           .animate-scroll {
             animation: scroll 30s linear infinite;
           }
           
-          .animate-scroll:hover {
+          .animate-scroll-mobile {
+            animation: scroll-mobile 20s linear infinite;
+          }
+          
+          .animate-scroll:hover,
+          .animate-scroll-mobile:hover {
             animation-play-state: paused;
           }
         `}</style>

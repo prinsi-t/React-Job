@@ -92,9 +92,10 @@ const JobListings = ({ isHome = false }) => {
 
       cacheRef.current[cacheKey] = formattedApiJobs;
   
-      setJobs((prev) =>
-        page === 1 ? formattedApiJobs : [...prev, ...formattedApiJobs]
-      );
+      setJobs((prev) => {
+        const newJobs = page === 1 ? formattedApiJobs : [...prev, ...formattedApiJobs];
+        return isHome ? newJobs.slice(0, 3) : newJobs;
+      });
   
       if (formattedApiJobs.length === 0) setHasMore(false);
     } catch (err) {
@@ -175,7 +176,7 @@ const JobListings = ({ isHome = false }) => {
 
           {/* Job Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
-            {jobs.map((job, index) => (
+            {(isHome ? jobs.slice(0, 3) : jobs).map((job, index) => (
               <div 
                 key={job._id || job.id}
                 className="h-full"

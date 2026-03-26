@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { FaTwitter, FaYoutube, FaFacebook, FaArrowRight, FaBriefcase, FaRocket, FaUsers, FaCode } from "react-icons/fa";
+import { FaArrowRight, FaBriefcase, FaRocket, FaUsers, FaCode } from "react-icons/fa";
 
 const Home = () => {
   const currentYear = new Date().getFullYear();
@@ -264,61 +264,6 @@ const Home = () => {
 
       </section>
 
-      {/* ── FOOTER ── */}
-      <footer className="relative mt-auto z-10 bg-gradient-to-br from-slate-950/95 via-blue-950/95 to-slate-950/95 backdrop-blur-sm border-t border-white/10">
-        <div className="absolute inset-0 bg-black/40"></div>
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div style={{ animation: 'float 10s ease-in-out infinite' }} className="absolute bottom-10 right-20 w-[400px] h-[400px] bg-blue-800/10 rounded-full blur-3xl"></div>
-        </div>
-
-        <div className="relative container mx-auto px-6 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-            <div className="space-y-3">
-              <h6 className="text-lg font-semibold text-white mb-4">Services</h6>
-              {["Branding", "Design", "Marketing", "Advertisement"].map(s => (
-                <a key={s} href="#" className="block text-white/70 hover:text-blue-400 transition-all duration-300 hover:translate-x-2">{s}</a>
-              ))}
-            </div>
-            <div className="space-y-3">
-              <h6 className="text-lg font-semibold text-white mb-4">Company</h6>
-              <a href="#" className="block text-white/70 hover:text-blue-400 transition-all duration-300 hover:translate-x-2">About us</a>
-              <Link to="/jobs" className="block text-white/70 hover:text-blue-400 transition-all duration-300 hover:translate-x-2">Jobs</Link>
-              <a href="#" className="block text-white/70 hover:text-blue-400 transition-all duration-300 hover:translate-x-2">Contact</a>
-              <a href="#" className="block text-white/70 hover:text-blue-400 transition-all duration-300 hover:translate-x-2">Press kit</a>
-            </div>
-            <div className="space-y-3">
-              <h6 className="text-lg font-semibold text-white mb-4">Legal</h6>
-              {["Terms of use", "Privacy policy", "Cookie policy"].map(s => (
-                <a key={s} href="#" className="block text-white/70 hover:text-blue-400 transition-all duration-300 hover:translate-x-2">{s}</a>
-              ))}
-            </div>
-            <div className="space-y-4">
-              <div className="flex items-center space-x-3">
-                <img src="/logo.png" alt="ReactJobs Logo" className="w-10 h-10 object-contain" />
-                <span className="text-xl font-bold text-white">ReactJobs.com</span>
-              </div>
-              <p className="text-white/70 text-sm">Providing reliable tech jobs since {currentYear - 5}</p>
-            </div>
-          </div>
-
-          <div className="pt-8 border-t border-white/10">
-            <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-              <p className="text-white/70 text-sm">© {currentYear} ReactJobs Industries Ltd. All rights reserved.</p>
-              <div className="flex space-x-4">
-                {[
-                  { Icon: FaTwitter, hover: "hover:bg-blue-600" },
-                  { Icon: FaYoutube, hover: "hover:bg-red-600" },
-                  { Icon: FaFacebook, hover: "hover:bg-blue-600" },
-                ].map(({ Icon, hover }, i) => (
-                  <a key={i} href="#" className={`p-2 bg-white/5 rounded-lg ${hover} transition-all duration-300 hover:scale-110 text-white`}>
-                    <Icon className="w-5 h-5" />
-                  </a>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };

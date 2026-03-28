@@ -66,8 +66,8 @@ const JobListing = ({ job }) => {
             <Link
               to={`/jobs/${job._id || `adzuna_${job.id}`}`}
               state={{ job, search: window.location.search }}
-              onClick={() => window.scrollTo(0, 0)}
-className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-300 shadow-lg hover:-translate-y-1 hover:shadow-xl w-full lg:w-auto text-center"            >
+              className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-300 shadow-lg hover:-translate-y-1 hover:shadow-xl w-full lg:w-auto text-center"
+            >
               View Details →
             </Link>
           </div>

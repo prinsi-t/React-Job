@@ -15,6 +15,7 @@ import JobPage from "./components/pages/JobPage";
 import EditJobPage from "./components/pages/EditJobPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import JobListings from "./components/JobListings";
+import ScrollToTop from "./components/ScrollToTop";
 
 const App = () => {
   const { user } = useAuth();
@@ -41,20 +42,23 @@ const App = () => {
   };
 
   return (
-    <Routes>
-      <Route path="/" element={<MainLayout />}>
-        <Route index element={user ? <HomePage /> : <Home />} />
-        <Route path="login" element={<Login />} />
-        <Route path="register" element={<Register />} />
-        <Route path="forgot-password" element={<ForgotPassword />} />
+    <>
+      <ScrollToTop />
+      <Routes>
+        <Route path="/" element={<MainLayout />}>
+          <Route index element={user ? <HomePage /> : <Home />} />
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
+          <Route path="forgot-password" element={<ForgotPassword />} />
 
-        <Route path="jobs" element={<ProtectedRoute><JobListings /></ProtectedRoute>} />
-        <Route path="add-job" element={<ProtectedRoute><AddJobPage addJobSubmit={addJob} /></ProtectedRoute>} />
-        <Route path="edit-job/:id" element={<ProtectedRoute><EditJobPage updateJobSubmit={updateJob} /></ProtectedRoute>} />
-        <Route path="jobs/:id" element={<ProtectedRoute><JobPage deleteJob={deleteJob} /></ProtectedRoute>} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Route>
-    </Routes>
+          <Route path="jobs" element={<ProtectedRoute><JobListings /></ProtectedRoute>} />
+          <Route path="add-job" element={<ProtectedRoute><AddJobPage addJobSubmit={addJob} /></ProtectedRoute>} />
+          <Route path="edit-job/:id" element={<ProtectedRoute><EditJobPage updateJobSubmit={updateJob} /></ProtectedRoute>} />
+          <Route path="jobs/:id" element={<ProtectedRoute><JobPage deleteJob={deleteJob} /></ProtectedRoute>} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Route>
+      </Routes>
+    </>
   );
 };
 

@@ -18,7 +18,6 @@ const Login = () => {
   const API_URL = import.meta.env.VITE_API_URL || "";
 
   useEffect(() => {
-    window.scrollTo(0, 0);
   }, []);
 
   const validateEmail = (email) => {
@@ -94,7 +93,6 @@ const Login = () => {
       }
 
       login(data);
-      window.scrollTo({ top: 0, behavior: 'instant' });
       setTimeout(() => {
         navigate("/", { replace: true });
       }, 50);

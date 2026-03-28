@@ -49,53 +49,64 @@ const JobListings = ({ isHome = false }) => {
         return;
       }
   
-      // ✅ COUNTRIES → ONLY ADZUNA
-      const cacheKey = `${country}-${page}`;
+      // ✅ COUNTRIES → LOAD 4 PAGES INITIALLY (12 jobs), then load more on demand
+      const initialPages = page === 1 ? 4 : 1; // Load 4 pages initially, 1 page after
+      const allJobs = [];
       
-      if (cacheRef.current[cacheKey]) {
-        setJobs((prev) =>
-          page === 1
-            ? cacheRef.current[cacheKey]
-            : [...prev, ...cacheRef.current[cacheKey]]
+      for (let i = 0; i < initialPages; i++) {
+        const currentPage = page === 1 ? i + 1 : page;
+        const cacheKey = `${country}-${currentPage}`;
+        
+        if (cacheRef.current[cacheKey]) {
+          allJobs.push(...cacheRef.current[cacheKey]);
+          continue;
+        }
+
+        const apiRes = await fetch(
+          `${API_URL}/api/live-jobs?page=${currentPage}&country=${country}`
         );
-        setLoading(false);
-        return;
+        const apiJobs = await apiRes.json();
+  
+        const formattedApiJobs = apiJobs.map((job) => ({
+          id: job.id,
+          title: job.title,
+          type: job.contract_time || "Full-Time",
+          contractType: job.contract_type || "Permanent",
+          category: job.category?.label || "General",
+          posted: job.created,
+          location: job.location?.display_name || "Remote",
+          description: job.__description__ || job.description,
+          salary:
+            job.salary_min && job.salary_max
+              ? `${job.salary_min} - ${job.salary_max}`
+              : "Not disclosed",
+          applyLink: job.redirect_url,
+          company: {
+            name: job.company?.display_name || "Unknown",
+          },
+          source: "adzuna",
+        }));
+
+        cacheRef.current[cacheKey] = formattedApiJobs;
+        allJobs.push(...formattedApiJobs);
+        
+        if (formattedApiJobs.length === 0) {
+          setHasMore(false);
+          break;
+        }
       }
-
-      const apiRes = await fetch(
-          `${API_URL}/api/live-jobs?page=${page}&country=${country}`
-      );
-  
-      const apiJobs = await apiRes.json();
-  
-      const formattedApiJobs = apiJobs.map((job) => ({
-        id: job.id,
-        title: job.title,
-        type: job.contract_time || "Full-Time",
-        contractType: job.contract_type || "Permanent",
-        category: job.category?.label || "General",
-        posted: job.created,
-        location: job.location?.display_name || "Remote",
-        description: job.__description__ || job.description,
-        salary:
-          job.salary_min && job.salary_max
-            ? `${job.salary_min} - ${job.salary_max}`
-            : "Not disclosed",
-        applyLink: job.redirect_url,
-        company: {
-          name: job.company?.display_name || "Unknown",
-        },
-        source: "adzuna",
-      }));
-
-      cacheRef.current[cacheKey] = formattedApiJobs;
-  
+      
       setJobs((prev) => {
-        const newJobs = page === 1 ? formattedApiJobs : [...prev, ...formattedApiJobs];
+        const newJobs = page === 1 ? allJobs : [...prev, ...allJobs];
         return isHome ? newJobs.slice(0, 3) : newJobs;
       });
+      
+      // Update page number if we loaded initial pages
+      if (page === 1 && initialPages === 4) {
+        setPage(5); // Next load will be page 5
+      }
   
-      if (formattedApiJobs.length === 0) setHasMore(false);
+      if (allJobs.length === 0) setHasMore(false);
     } catch (err) {
       console.error(err);
     }
